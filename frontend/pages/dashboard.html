@@ -265,8 +265,8 @@
     <script src="/js/audio-system.js"></script>
     <script>
         // API configuration
-        const API_BASE = 'http://localhost:8080';
-        const AUTH_TOKEN = localStorage.getItem('codecade_token') || '';
+        const API_BASE = 'http://localhost:3000';
+        const AUTH_TOKEN = localStorage.getItem('token') || '';
         
         // Check if user is logged in
         if (!AUTH_TOKEN) {
@@ -282,7 +282,7 @@
         async function initDashboard() {
             // Get username from token
             try {
-                const response = await fetch('http://localhost:8080/user/stats', {
+                const response = await fetch('http://localhost:3000/api/user/profile', {
                     headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
                 });
                 const profile = await response.json();
@@ -312,7 +312,7 @@
 
         async function fetchDashboardData() {
             try {
-                const response = await fetch(`${API_BASE}/user/progress`, {
+                const response = await fetch(`${API_BASE}/api/user/stats`, {
                     headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
                 });
                 const data = await response.json();
@@ -476,7 +476,7 @@
 
         async function loadSubmissions() {
             try {
-                const response = await fetch(`${API_BASE}/problems/solved`, {
+                const response = await fetch(`${API_BASE}/api/user/stats`, {
                     headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
                 });
                 const data = await response.json();

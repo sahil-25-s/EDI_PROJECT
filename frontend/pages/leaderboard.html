@@ -5,542 +5,193 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard - Codecade</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            font-family: 'Inter', sans-serif;
+        body {
+            font-family: 'VT323', monospace;
             background: #000 url('/assets/images/background.jpg') center center / cover no-repeat fixed;
-            color: #f8f5ff;
-            overflow-x: hidden;
+            color: #e0e0e0;
+            font-size: 1.25rem;
         }
 
-        .font-display { font-family: 'VT323', monospace; }
-        .text-offwhite { color: #f8f5ff; }
-        .text-neon-yellow { color: #fde047; text-shadow: 0 0 10px rgba(253, 224, 71, 0.5); }
+        .retro-panel {
+            background: linear-gradient(135deg, rgba(75, 46, 114, 0.9), rgba(46, 26, 71, 0.9));
+            border: 4px solid #9932cc;
+            box-shadow: 0 0 15px #9932cc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
 
-        .text-glow-purple { color: #d8b4fe; text-shadow: 0 0 5px #a855f7, 0 0 10px #a855f7; }
-        .text-glow-pink { color: #f472b6; text-shadow: 0 0 5px #ec4899, 0 0 10px #ec4899; }
-        .text-glow-cyan { color: #67e8f9; text-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4; }
-        
-        .ghost-btn {
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border: 2px solid rgba(168, 85, 247, 0.5);
-            border-radius: 6px;
-            background: rgba(0, 0, 0, 0.3);
-            color: #d8b4fe;
+        .retro-btn {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+            border: 3px solid #da70d6;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            backdrop-filter: blur(5px);
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            color: #da70d6;
+            background: transparent;
         }
 
-        .ghost-btn:hover {
-            border-color: #a855f7;
-            background: rgba(168, 85, 247, 0.2);
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
-            transform: translateX(-3px);
+        .retro-btn:hover {
+            background: #da70d6;
+            color: #1a0a2e;
+            box-shadow: 0 0 20px #da70d6;
         }
 
-        .hero-strip {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.85) 0%, rgba(236, 72, 153, 0.85) 100%);
-            backdrop-filter: blur(10px);
-            border: 3px solid #a855f7;
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+        .text-glow-pink { color: #ff1493; text-shadow: 0 0 10px #ff1493; }
+        .text-glow-purple { color: #9932cc; text-shadow: 0 0 10px #9932cc; }
+        .text-glow-gold { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+        .text-glow-silver { color: #c0c0c0; text-shadow: 0 0 10px #c0c0c0; }
+        .text-glow-bronze { color: #cd7f32; text-shadow: 0 0 10px #cd7f32; }
+
+        .leaderboard-item {
+            background: rgba(75, 46, 114, 0.6);
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
         }
 
-        .leaderboard-panel {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(236, 72, 153, 0.3) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(244, 114, 182, 0.5);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4), 0 0 60px rgba(192, 132, 252, 0.2);
-            animation: panelGlow 3s ease-in-out infinite;
+        .leaderboard-item:hover {
+            border-color: #da70d6;
+            background: rgba(75, 46, 114, 0.8);
         }
 
-        @keyframes panelGlow {
-            0%, 100% { box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4), 0 0 60px rgba(192, 132, 252, 0.2); }
-            50% { box-shadow: 0 8px 32px rgba(168, 85, 247, 0.5), 0 0 70px rgba(192, 132, 252, 0.3); }
-        }
+        .rank-1 { border-color: #ffd700; background: rgba(255, 215, 0, 0.1); }
+        .rank-2 { border-color: #c0c0c0; background: rgba(192, 192, 192, 0.1); }
+        .rank-3 { border-color: #cd7f32; background: rgba(205, 127, 50, 0.1); }
 
         .rank-badge {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            font-size: 1.5rem;
             font-weight: bold;
-            border: 3px solid;
+            font-size: 1.2rem;
         }
 
-        .rank-1 {
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            border-color: #ffa500;
-            color: #000;
-            box-shadow: 0 0 20px #ffd700;
-        }
-
-        .rank-2 {
-            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
-            border-color: #a0a0a0;
-            color: #000;
-            box-shadow: 0 0 15px #c0c0c0;
-        }
-
-        .rank-3 {
-            background: linear-gradient(135deg, #cd7f32, #e8a87c);
-            border-color: #b8732d;
-            color: #000;
-            box-shadow: 0 0 15px #cd7f32;
-        }
-
-        .rank-default {
-            background: rgba(96, 165, 250, 0.2);
-            border-color: #60a5fa;
-            color: #60a5fa;
-        }
-
-        .table-header {
-            background: linear-gradient(135deg, rgba(88, 28, 135, 0.6) 0%, rgba(139, 92, 246, 0.6) 100%);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            border-bottom: 2px solid rgba(168, 85, 247, 0.6);
-            box-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
-        }
-
-        .leaderboard-row {
-            background: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(168, 85, 247, 0.1);
-            transition: all 0.2s ease;
-        }
-
-        .leaderboard-row:nth-child(even) {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .leaderboard-row:hover {
-            background: rgba(168, 85, 247, 0.25);
-            box-shadow: inset 0 0 20px rgba(168, 85, 247, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .rank-gold { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
-        .rank-silver { color: #c0c0c0; text-shadow: 0 0 10px #c0c0c0; }
-        .rank-bronze { color: #cd7f32; text-shadow: 0 0 10px #cd7f32; }
-        .rank-normal { color: #f8f5ff; }
-
-        .level-badge {
-            background: linear-gradient(135deg, #06b6d4, #3b82f6);
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            border: 2px solid #67e8f9;
-            font-size: 1rem;
-            box-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
-        }
-
-        .xp-bar {
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid #8b5cf6;
-            border-radius: 20px;
-            overflow: hidden;
-            height: 12px;
-        }
-
-        .xp-fill {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
-            height: 100%;
-            transition: width 0.5s ease;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
-        }
-
-        .filter-btn {
-            font-family: 'VT323', monospace;
-            padding: 0.5rem 1rem;
-            border: 2px solid #8b5cf6;
-            background: rgba(139, 92, 246, 0.2);
-            color: #c084fc;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .filter-btn:hover, .filter-btn.active {
-            background: #8b5cf6;
-            color: #000;
-            box-shadow: 0 0 15px #8b5cf6;
-            transform: translateY(-1px);
-        }
-
-        .your-rank-card {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(236, 72, 153, 0.4) 100%);
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(192, 132, 252, 0.6);
-            border-radius: 16px;
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
-        }
-
-        .avatar-circle {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #8b5cf6, #ec4899);
-            border: 3px solid #c084fc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
-        }
-
-        .filter-pill {
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            padding: 0.5rem 1.25rem;
-            border: 2px solid rgba(168, 85, 247, 0.5);
-            background: rgba(139, 92, 246, 0.2);
-            color: #d8b4fe;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-size: 0.95rem;
-        }
-
-        .filter-pill:hover, .filter-pill.active {
-            background: rgba(168, 85, 247, 0.4);
-            border-color: #a855f7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-            transform: translateY(-1px);
-        }
-
-        .search-input {
-            font-family: 'Inter', sans-serif;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(168, 85, 247, 0.5);
-            border-radius: 12px;
-            color: #f8f5ff;
-            font-size: 0.95rem;
-            transition: all 0.25s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #a855f7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .search-input::placeholder {
-            color: rgba(248, 245, 255, 0.5);
-        }
-
-        .sort-select {
-            font-family: 'Inter', sans-serif;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(168, 85, 247, 0.5);
-            border-radius: 12px;
-            color: #d8b4fe;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .sort-select:hover, .sort-select:focus {
-            outline: none;
-            border-color: #a855f7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .podium-card {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.25) 100%);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(192, 132, 252, 0.4);
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.25s ease;
-            animation: cardGlow 4s ease-in-out infinite;
-        }
-
-        .podium-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
-        }
-
-        .podium-1 {
-            transform: scale(1.1);
-            border: 2px solid rgba(255, 215, 0, 0.6);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
-            animation: goldGlow 4s ease-in-out infinite;
-        }
-
-        .podium-1:hover {
-            transform: scale(1.1) translateY(-5px);
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
-        }
-
-        @keyframes cardGlow {
-            0%, 100% { border-color: rgba(192, 132, 252, 0.4); }
-            50% { border-color: rgba(192, 132, 252, 0.6); }
-        }
-
-        @keyframes goldGlow {
-            0%, 100% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.3); }
-            50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.4); }
-        }
-
-        .medal {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a855f7; }
+        .rank-1 .rank-badge { background: #ffd700; color: #000; }
+        .rank-2 .rank-badge { background: #c0c0c0; color: #000; }
+        .rank-3 .rank-badge { background: #cd7f32; color: #fff; }
+        .rank-other .rank-badge { background: #444; color: #fff; }
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- Back Button -->
-    <div class="absolute top-6 left-6 z-50">
-        <a href="index.html" class="ghost-btn">
-            ← Back to Home
-        </a>
-    </div>
+    <!-- Header -->
+    <header class="retro-panel">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl text-glow-pink">🏆 LEADERBOARD</h1>
+            <div class="flex gap-2">
+                <a href="index.html" class="retro-btn text-sm">← HOME</a>
+                <button id="refreshBtn" class="retro-btn text-sm">REFRESH</button>
+            </div>
+        </div>
+    </header>
 
-    <!-- Hero Section -->
-    <div class="pt-24 pb-12 px-4">
-        <div class="max-w-6xl mx-auto">
-            <div class="hero-strip rounded-xl p-8 text-center">
-                <h1 class="font-display text-6xl md:text-7xl font-bold text-glow-purple mb-4">
-                    🏆 LEADERBOARD
-                </h1>
-                <p class="text-xl md:text-2xl text-offwhite">
-                    See how you stack up against other coders.
-                </p>
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Top 3 -->
+        <div class="retro-panel">
+            <h2 class="text-2xl text-glow-purple mb-6 text-center">TOP CODERS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="topThree">
+                <!-- Top 3 will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Full Leaderboard -->
+        <div class="retro-panel">
+            <h2 class="text-xl text-glow-purple mb-4">FULL RANKINGS</h2>
+            <div id="leaderboardList">
+                <!-- Leaderboard will be loaded here -->
             </div>
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="max-w-6xl mx-auto px-4 mb-8">
-        <div class="flex flex-wrap gap-4 justify-center">
-            <button class="filter-btn active" data-filter="all">All Time</button>
-            <button class="filter-btn" data-filter="week">This Week</button>
-            <button class="filter-btn" data-filter="month">This Month</button>
-            <button class="filter-btn" data-filter="friends">Friends Only</button>
-        </div>
-    </div>
-
-    <!-- Your Rank Card -->
-    <div class="max-w-6xl mx-auto px-4 mb-6">
-        <div class="your-rank-card p-6">
-            <div class="flex items-center gap-6">
-                <!-- Avatar -->
-                <div class="avatar-circle">
-                    BB
-                </div>
-                
-                <!-- Info -->
-                <div class="flex-1">
-                    <div class="text-xl md:text-2xl font-semibold text-glow-purple mb-2">
-                        You are <span class="text-glow-cyan">#7</span> globally
-                    </div>
-                    <div class="flex items-center gap-6 flex-wrap">
-                        <div>
-                            <span class="text-base text-offwhite/70">XP:</span>
-                            <span class="text-xl font-bold text-neon-yellow ml-2">9,920</span>
-                        </div>
-                        <div>
-                            <span class="text-base text-offwhite/70">Level:</span>
-                            <span class="level-badge text-lg font-bold ml-2">32</span>
-                        </div>
-                        <div class="flex-1 min-w-[200px]">
-                            <div class="flex justify-between text-sm text-offwhite/70 mb-1">
-                                <span>Next Level</span>
-                                <span>65%</span>
-                            </div>
-                            <div class="xp-bar">
-                                <div class="xp-fill" style="width: 65%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Leaderboard Panel -->
-    <div class="max-w-6xl mx-auto px-4 pb-16">
-        <div class="leaderboard-panel p-6 md:p-8">
-            <!-- Controls -->
-            <div class="flex flex-wrap gap-4 items-center justify-between mb-8 pb-6 border-b border-purple-500/30">
-                <div class="flex flex-wrap gap-3">
-                    <button class="filter-pill active">Global</button>
-                    <button class="filter-pill">Friends</button>
-                    <button class="filter-pill">College</button>
-                </div>
-                <div class="flex gap-3 flex-wrap">
-                    <select class="sort-select">
-                        <option>Sort by: Rank</option>
-                        <option>Sort by: XP</option>
-                        <option>Sort by: Level</option>
-                    </select>
-                    <input type="text" class="search-input" placeholder="Search player..." />
-                </div>
-            </div>
-
-            <!-- Top 3 Podium -->
-            <div class="mb-12">
-                <h3 class="font-display text-4xl font-bold text-glow-purple text-center mb-6">🏆 TOP 3 🏆</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                    <!-- 2nd Place -->
-                    <div class="podium-card">
-                        <div class="medal">🥈</div>
-                        <div class="text-2xl font-bold text-glow-cyan mb-2">#2</div>
-                        <div class="text-xl font-semibold text-glow-purple mb-3">AlgoQueen</div>
-                        <div class="text-base text-offwhite/80 mb-2">XP: <span class="text-neon-yellow font-semibold">14,890</span></div>
-                        <span class="level-badge text-base">Level 41</span>
-                    </div>
-                    
-                    <!-- 1st Place -->
-                    <div class="podium-card podium-1">
-                        <div class="medal">🥇</div>
-                        <div class="text-3xl font-bold text-glow-cyan mb-2">#1</div>
-                        <div class="text-2xl font-semibold text-glow-purple mb-3">CodeMaster_X</div>
-                        <div class="text-lg text-offwhite/80 mb-2">XP: <span class="text-neon-yellow font-semibold">15,420</span></div>
-                        <span class="level-badge text-base">Level 42</span>
-                    </div>
-                    
-                    <!-- 3rd Place -->
-                    <div class="podium-card">
-                        <div class="medal">🥉</div>
-                        <div class="text-2xl font-bold text-glow-cyan mb-2">#3</div>
-                        <div class="text-xl font-semibold text-glow-purple mb-3">ByteNinja</div>
-                        <div class="text-base text-offwhite/80 mb-2">XP: <span class="text-neon-yellow font-semibold">13,750</span></div>
-                        <span class="level-badge text-base">Level 39</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table Header -->
-            <div class="table-header grid grid-cols-12 gap-4 mb-4 p-4 rounded-lg text-base md:text-lg text-glow-cyan font-semibold">
-                <div class="col-span-2 text-center">Rank</div>
-                <div class="col-span-4">Player</div>
-                <div class="col-span-2 text-right">XP</div>
-                <div class="col-span-2 text-center">Level</div>
-                <div class="col-span-2 text-center">Streak</div>
-            </div>
-
-            <!-- Leaderboard Rows -->
-            <div class="space-y-3" id="leaderboardRows">
-                <!-- Rows populated by JS -->
-            </div>
-        </div>
-    </div>
-
-    <script src="/js/audio-system.js"></script>
     <script>
-        let leaderboardData = [];
+        const API_BASE = 'http://localhost:3000';
         
         async function loadLeaderboard() {
             try {
-                const response = await fetch('http://localhost:8080/api/leaderboard');
-                const data = await response.json();
-                leaderboardData = data.map((player, index) => ({
-                    rank: index + 1,
-                    name: player.username,
-                    avatar: '👤',
-                    college: 'Unknown',
-                    xp: player.rating || 0,
-                    level: Math.floor((player.rating || 0) / 100),
-                    streak: 0,
-                    xpProgress: 0
-                }));
-                loadLeaderboard();
+                const response = await fetch(`${API_BASE}/api/leaderboard`);
+                const leaderboard = await response.json();
+
+                renderTopThree(leaderboard.slice(0, 3));
+                renderFullLeaderboard(leaderboard);
+
             } catch (error) {
                 console.error('Failed to load leaderboard:', error);
-                leaderboardData = [];
-                renderLeaderboard();
+                // Show mock data
+                const mockData = [
+                    { rank: 1, username: 'CodeMaster', level: 15, xp: 1500, battleRating: 1800, battleWins: 25, battleLosses: 5 },
+                    { rank: 2, username: 'AlgoNinja', level: 12, xp: 1200, battleRating: 1650, battleWins: 20, battleLosses: 8 },
+                    { rank: 3, username: 'DataWiz', level: 10, xp: 1000, battleRating: 1500, battleWins: 15, battleLosses: 10 },
+                    { rank: 4, username: 'TestPlayer', level: 1, xp: 0, battleRating: 1200, battleWins: 0, battleLosses: 0 }
+                ];
+                renderTopThree(mockData.slice(0, 3));
+                renderFullLeaderboard(mockData);
             }
         }
 
-        function getRankColor(rank) {
-            if (rank === 1) return 'rank-gold';
-            if (rank === 2) return 'rank-silver';
-            if (rank === 3) return 'rank-bronze';
-            return 'rank-normal';
-        }
-
-        function renderLeaderboard() {
-            const container = document.getElementById('leaderboardRows');
-            container.innerHTML = leaderboardData.map(player => `
-                <div class="leaderboard-row rounded-lg p-4">
-                    <div class="grid grid-cols-12 gap-4 items-center">
-                        <!-- Rank -->
-                        <div class="col-span-2 text-center">
-                            <div class="text-3xl font-bold ${getRankColor(player.rank)}">
-                                ${player.rank}
-                            </div>
-                        </div>
-                        
-                        <!-- Player -->
-                        <div class="col-span-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl">${player.avatar}</span>
-                                <div class="flex-1">
-                                    <div class="text-lg md:text-xl font-semibold text-glow-purple">${player.name}</div>
-                                    <div class="text-sm text-offwhite/60">${player.college}</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- XP -->
-                        <div class="col-span-2 text-right">
-                            <div class="text-xl md:text-2xl font-bold text-neon-yellow">${player.xp.toLocaleString()}</div>
-                        </div>
-                        
-                        <!-- Level -->
-                        <div class="col-span-2 flex justify-center">
-                            <span class="level-badge text-lg font-semibold">${player.level}</span>
-                        </div>
-                        
-                        <!-- Streak -->
-                        <div class="col-span-2 text-center">
-                            <div class="text-2xl md:text-3xl">🔥</div>
-                            <div class="text-xl font-bold text-glow-pink">${player.streak}d</div>
+        function renderTopThree(topThree) {
+            const container = document.getElementById('topThree');
+            
+            container.innerHTML = topThree.map((player, index) => {
+                const position = index + 1;
+                const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : '🥉';
+                const glowClass = position === 1 ? 'text-glow-gold' : 
+                                position === 2 ? 'text-glow-silver' : 'text-glow-bronze';
+                
+                return `
+                    <div class="text-center p-4 border-2 border-${position === 1 ? 'yellow' : position === 2 ? 'gray' : 'orange'}-500 rounded-lg">
+                        <div class="text-4xl mb-2">${medal}</div>
+                        <h3 class="text-xl ${glowClass} mb-2">${player.username}</h3>
+                        <div class="space-y-1 text-sm">
+                            <div>Level ${player.level}</div>
+                            <div>${player.xp} XP</div>
+                            <div>Rating: ${player.battleRating}</div>
+                            <div class="text-green-400">${player.battleWins}W-${player.battleLosses}L</div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        // Filter functionality
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        function renderFullLeaderboard(leaderboard) {
+            const container = document.getElementById('leaderboardList');
+            
+            container.innerHTML = leaderboard.map(player => {
+                const rankClass = player.rank <= 3 ? `rank-${player.rank}` : 'rank-other';
+                const winRate = player.battleWins + player.battleLosses > 0 ? 
+                    Math.round((player.battleWins / (player.battleWins + player.battleLosses)) * 100) : 0;
+                
+                return `
+                    <div class="leaderboard-item ${rankClass} flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="rank-badge">${player.rank}</div>
+                            <div>
+                                <div class="text-lg font-bold">${player.username}</div>
+                                <div class="text-sm text-gray-400">Level ${player.level} • ${player.xp} XP</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg">⚔️ ${player.battleRating}</div>
+                            <div class="text-sm text-gray-400">${player.battleWins}W-${player.battleLosses}L (${winRate}%)</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-        // Filter pills
-        document.querySelectorAll('.filter-pill').forEach(pill => {
-            pill.addEventListener('click', function() {
-                document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        document.getElementById('refreshBtn').addEventListener('click', loadLeaderboard);
 
-        // Initialize
-        renderLeaderboard();
+        loadLeaderboard();
     </script>
 </body>
 </html>

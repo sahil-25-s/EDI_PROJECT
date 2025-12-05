@@ -634,8 +634,8 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8080';
-        const AUTH_TOKEN = localStorage.getItem('codecade_token') || '';
+        const API_BASE = 'http://localhost:3000';
+        const AUTH_TOKEN = localStorage.getItem('token') || '';
         
         // Check if user is logged in
         if (!AUTH_TOKEN) {
@@ -738,19 +738,33 @@
                 if (currentFilter !== 'all') params.append('difficulty', currentFilter);
                 if (currentTag) params.append('tag', currentTag);
 
-                const response = await fetch(`${API_BASE}/api/practice/problems?${params}`);
+                const response = await fetch(`${API_BASE}/api/problems`);
                 const data = await response.json();
                 
+                // Transform data to expected format
+                const transformedData = {
+                    problems: data.map(p => ({
+                        id: p.id,
+                        title: p.title,
+                        difficulty: p.difficulty,
+                        status: 'Not Started',
+                        avgTime: 15,
+                        attempts: 0,
+                        tags: ['Array', 'Hash Table']
+                    })),
+                    hasMore: false
+                };
+                
                 if (reset) {
-                    problems = data.problems;
+                    problems = transformedData.problems;
                 } else {
-                    problems = [...problems, ...data.problems];
+                    problems = [...problems, ...transformedData.problems];
                 }
                 
                 renderProblems();
                 
                 const loadMoreBtn = document.getElementById('loadMoreBtn');
-                loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
+                loadMoreBtn.style.display = transformedData.hasMore ? 'block' : 'none';
                 
                 currentPage++;
             } catch (error) {
@@ -838,7 +852,7 @@
         
         async function updateStats() {
             try {
-                const response = await fetch(`${API_BASE}/api/profile/stats`, {
+                const response = await fetch(`${API_BASE}/api/user/stats`, {
                     headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
                 });
                 const stats = await response.json();

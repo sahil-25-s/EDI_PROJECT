@@ -1,14 +1,19 @@
 // CODECADE Frontend API Integration
 // Automatically detect API URL for local or production
-const API_URL = window.location.origin || 'http://localhost:8080';
+const API_URL = window.location.origin || 'http://localhost:3000';
 
 // Auth Functions
 async function signup(username, email, password) {
-  const response = await fetch(`${API_URL}/auth/signup`, {
+  const response = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, email, password })
   });
+  
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  
   const data = await response.json();
   
   if (data.token) {

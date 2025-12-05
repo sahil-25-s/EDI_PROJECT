@@ -6,440 +6,235 @@
     <title>Profile - Codecade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'VT323', monospace; background: #000 url('/assets/images/background.jpg') center center / cover no-repeat fixed; }
-        .text-glow-blue { color: #4fc3f7; text-shadow: 0 0 3px #4fc3f7, 0 0 6px #4fc3f7; }
-        .text-glow-purple { color: #9c27b0; text-shadow: 0 0 3px #9c27b0, 0 0 6px #9c27b0; }
-        .text-glow-cyan { color: #00bcd4; text-shadow: 0 0 3px #00bcd4, 0 0 6px #00bcd4; }
-        .retro-panel { background: linear-gradient(135deg, rgba(63, 81, 181, 0.9), rgba(156, 39, 176, 0.7)); border: 2px solid #3f51b5; box-shadow: 0 0 8px rgba(63, 81, 181, 0.5); }
-        .stat-card { background: rgba(26, 35, 126, 0.8); border: 2px solid #3f51b5; transition: all 0.3s ease; }
-        .stat-card:hover { border-color: #4fc3f7; box-shadow: 0 0 15px rgba(79, 195, 247, 0.3); }
-        .profile-avatar { width: 80px; height: 80px; border: 3px solid #3f51b5; border-radius: 50%; background: #1a237e; box-shadow: 0 0 15px rgba(63, 81, 181, 0.5); }
-        .badge { background: rgba(79, 195, 247, 0.2); border: 1px solid #4fc3f7; }
-        .section-toggle { cursor: pointer; transition: all 0.2s ease; }
-        .section-toggle:hover { color: #ff1493; }
-        .skeleton { background: linear-gradient(90deg, #444 25%, #555 50%, #444 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
-        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .mobile-card-carousel { scroll-snap-type: x mandatory; }
-        .mobile-card-carousel > * { scroll-snap-align: start; }
+        body {
+            font-family: 'VT323', monospace;
+            background: #000 url('/assets/images/background.jpg') center center / cover no-repeat fixed;
+            color: #e0e0e0;
+            font-size: 1.25rem;
+        }
+
+        .retro-panel {
+            background: linear-gradient(135deg, rgba(75, 46, 114, 0.9), rgba(46, 26, 71, 0.9));
+            border: 4px solid #9932cc;
+            box-shadow: 0 0 15px #9932cc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .retro-btn {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+            border: 3px solid #da70d6;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            color: #da70d6;
+            background: transparent;
+        }
+
+        .retro-btn:hover {
+            background: #da70d6;
+            color: #1a0a2e;
+            box-shadow: 0 0 20px #da70d6;
+        }
+
+        .retro-input {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            background: rgba(46, 26, 71, 0.8);
+            border: 2px solid #9932cc;
+            color: #c084fc;
+            padding: 0.75rem;
+            border-radius: 6px;
+            width: 100%;
+            outline: none;
+        }
+
+        .retro-input:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
+
+        .text-glow-pink { color: #ff1493; text-shadow: 0 0 10px #ff1493; }
+        .text-glow-purple { color: #9932cc; text-shadow: 0 0 10px #9932cc; }
+        .text-glow-cyan { color: #67e8f9; text-shadow: 0 0 10px #06b6d4; }
+
+        .stat-card {
+            background: rgba(75, 46, 114, 0.6);
+            border: 2px solid #da70d6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #ff69b4;
+            background: linear-gradient(135deg, #ff1493, #9932cc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+        }
     </style>
 </head>
-<body class="min-h-screen text-white">
-    <div class="bg-purple-900/40 min-h-screen">
-        <!-- Header -->
-        <header class="bg-black/50 border-b-2 border-blue-500 p-4">
-            <div class="flex items-center justify-between max-w-7xl mx-auto px-4">
-                <a href="index.html" class="text-xl text-blue-400 hover:text-blue-300">← Back to Home</a>
-                <h1 class="text-2xl font-bold text-glow-blue">Player Profile</h1>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="retro-panel">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl text-glow-pink">PLAYER PROFILE</h1>
+            <div class="flex gap-2">
+                <a href="index.html" class="retro-btn text-sm">← HOME</a>
+                <a href="dashboard.html" class="retro-btn text-sm">DASHBOARD</a>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <div class="max-w-6xl mx-auto px-4 py-6">
-            <!-- Row 1: Profile Hero (Compact) -->
-            <div class="retro-panel rounded-xl p-6 mb-6">
-                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
-                    <div class="flex items-center gap-4">
-                        <div class="profile-avatar flex items-center justify-center text-3xl text-glow-blue" id="profileAvatar">?</div>
-                        <div>
-                            <h2 class="text-2xl font-bold text-glow-blue" id="profileName">CodeMaster</h2>
-                            <p class="text-gray-300 text-sm" id="profileHeadline">Full Stack Developer — MIT</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex-1 grid grid-cols-3 gap-4 text-center">
-                        <div>
-                            <div class="text-xl font-bold text-glow-cyan" id="userXP">15,420</div>
-                            <div class="text-xs text-gray-400">XP</div>
-                        </div>
-                        <div>
-                            <div class="text-xl font-bold text-glow-cyan" id="userLevel">42</div>
-                            <div class="text-xs text-gray-400">Level</div>
-                        </div>
-                        <div>
-                            <div class="text-xl font-bold text-glow-cyan" id="userStreak">12</div>
-                            <div class="text-xs text-gray-400">Streak</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex gap-2">
-                        <button id="followBtn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm font-bold transition-colors" aria-label="Follow user">
-                            Follow
-                        </button>
-                        <button id="editBtn" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-sm font-bold transition-colors hidden" aria-label="Edit profile">
-                            ✏️ Edit
-                        </button>
-                        <button id="deleteBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold transition-colors hidden" aria-label="Delete profile">
-                            🗑️ Delete
-                        </button>
-                    </div>
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Profile Info -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- User Card -->
+            <div class="retro-panel text-center">
+                <div class="avatar" id="userAvatar">👤</div>
+                <h2 class="text-2xl text-glow-purple mb-2" id="username">Loading...</h2>
+                <p class="text-gray-300 mb-4" id="userEmail">Loading...</p>
+                <div class="space-y-2">
+                    <div class="text-glow-cyan">Level <span id="userLevel">1</span></div>
+                    <div class="text-sm text-gray-400"><span id="userXP">0</span> XP</div>
+                    <div class="text-sm text-gray-400">Battle Rating: <span id="battleRating">1200</span></div>
                 </div>
             </div>
 
-            <!-- Row 2: Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <!-- College Card -->
-                <div class="stat-card rounded-xl p-6">
-                    <h3 class="text-lg text-glow-purple mb-4">College</h3>
-                    <div class="text-2xl font-bold text-glow-cyan" id="collegeCard">MIT</div>
-                    <div class="text-sm text-gray-400 mt-2">Computer Science</div>
-                </div>
-
-                <!-- XP Progress Card -->
-                <div class="stat-card rounded-xl p-6">
-                    <h3 class="text-lg text-glow-purple mb-4">Experience</h3>
-                    <div class="text-2xl font-bold text-glow-cyan mb-2" id="xpCard">15,420 XP</div>
-                    <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
-                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full" style="width: 68%"></div>
-                    </div>
-                    <div class="text-xs text-gray-400">Level 42 → 43 (4,580 XP to go)</div>
-                </div>
-
-                <!-- Streak Card -->
-                <div class="stat-card rounded-xl p-6">
-                    <h3 class="text-lg text-glow-purple mb-4">Current Streak</h3>
-                    <div class="text-2xl font-bold text-glow-cyan mb-2" id="streakCard">12 Days</div>
-                    <div class="text-sm text-gray-400">Best: 28 days</div>
-                    <div class="text-xs text-gray-400 mt-1">🔥 Keep it going!</div>
-                </div>
-            </div>
-
-            <!-- Micro Stats Row -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card rounded-lg p-4 text-center">
-                    <div class="text-lg font-bold text-glow-blue" id="problemsSolved">247</div>
-                    <div class="text-xs text-gray-400">Problems Solved</div>
-                </div>
-                <div class="stat-card rounded-lg p-4 text-center">
-                    <div class="text-lg font-bold text-glow-blue" id="successRate">78%</div>
-                    <div class="text-xs text-gray-400">Success Rate</div>
-                </div>
-                <div class="stat-card rounded-lg p-4 text-center">
-                    <div class="text-lg font-bold text-glow-blue" id="avgTime">23m</div>
-                    <div class="text-xs text-gray-400">Avg Time</div>
-                </div>
-                <div class="stat-card rounded-lg p-4 text-center">
-                    <div class="text-lg font-bold text-glow-blue" id="globalRank">#1,247</div>
-                    <div class="text-xs text-gray-400">Global Rank</div>
-                </div>
-            </div>
-
-            <!-- Collapsible Sections -->
-            <div class="space-y-4">
-                <!-- Progress & Stats Section -->
-                <div class="retro-panel rounded-xl">
-                    <div class="section-toggle p-4 border-b border-blue-600" onclick="toggleSection('progress')">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-xl text-glow-purple">📊 Progress & Stats</h3>
-                            <span class="text-gray-400" id="progressToggle">▼</span>
+            <!-- Stats -->
+            <div class="lg:col-span-2">
+                <div class="retro-panel">
+                    <h3 class="text-xl text-glow-pink mb-4">STATISTICS</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-card">
+                            <div class="text-2xl text-glow-pink" id="problemsSolved">0</div>
+                            <div class="text-sm">Problems Solved</div>
                         </div>
-                    </div>
-                    <div id="progressSection" class="p-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <h4 class="text-lg text-glow-blue mb-3">Problems by Difficulty</h4>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-green-400">Easy</span>
-                                        <span>120/150</span>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-green-400 h-2 rounded-full" style="width: 80%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-yellow-400">Medium</span>
-                                        <span>95/200</span>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 47%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-red-400">Hard</span>
-                                        <span>32/100</span>
-                                        <div class="w-20 bg-gray-700 rounded-full h-2">
-                                            <div class="bg-red-400 h-2 rounded-full" style="width: 32%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="text-lg text-glow-blue mb-3">Recent Activity</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between">
-                                        <span>Two Sum</span>
-                                        <span class="text-green-400">✓ Solved</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>Valid Parentheses</span>
-                                        <span class="text-green-400">✓ Solved</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span>Merge Intervals</span>
-                                        <span class="text-red-400">✗ Failed</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="stat-card">
+                            <div class="text-2xl text-glow-purple" id="lessonsCompleted">0</div>
+                            <div class="text-sm">Lessons Done</div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Recent Submissions Section -->
-                <div class="retro-panel rounded-xl">
-                    <div class="section-toggle p-4 border-b border-blue-600" onclick="toggleSection('submissions')">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-xl text-glow-purple">📝 Recent Submissions</h3>
-                            <span class="text-gray-400" id="submissionsToggle">▼</span>
+                        <div class="stat-card">
+                            <div class="text-2xl text-glow-cyan" id="battleWins">0</div>
+                            <div class="text-sm">Battle Wins</div>
                         </div>
-                    </div>
-                    <div id="submissionsSection" class="p-4">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead>
-                                    <tr class="border-b border-blue-600">
-                                        <th class="text-left p-2 text-glow-blue">Problem</th>
-                                        <th class="text-left p-2 text-glow-blue">Status</th>
-                                        <th class="text-left p-2 text-glow-blue">Time</th>
-                                        <th class="text-left p-2 text-glow-blue">Date</th>
-                                        <th class="text-left p-2 text-glow-blue">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="submissionsTable">
-                                    <tr class="border-b border-gray-700">
-                                        <td class="p-2">Two Sum</td>
-                                        <td class="p-2 text-green-400">Accepted</td>
-                                        <td class="p-2">15m 23s</td>
-                                        <td class="p-2">2 hours ago</td>
-                                        <td class="p-2">
-                                            <button class="text-cyan-400 hover:text-cyan-300 text-xs">View Code</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Achievements Section -->
-                <div class="retro-panel rounded-xl">
-                    <div class="section-toggle p-4 border-b border-blue-600" onclick="toggleSection('achievements')">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-xl text-glow-purple">🏆 Achievements & Badges</h3>
-                            <span class="text-gray-400" id="achievementsToggle">▼</span>
-                        </div>
-                    </div>
-                    <div id="achievementsSection" class="p-4">
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="badge rounded-lg p-3 text-center" title="Solved 100 problems">
-                                <div class="text-2xl mb-1">🎯</div>
-                                <div class="text-xs">Century</div>
-                            </div>
-                            <div class="badge rounded-lg p-3 text-center" title="7-day streak">
-                                <div class="text-2xl mb-1">🔥</div>
-                                <div class="text-xs">Hot Streak</div>
-                            </div>
-                            <div class="badge rounded-lg p-3 text-center" title="Solved first hard problem">
-                                <div class="text-2xl mb-1">💪</div>
-                                <div class="text-xs">Hard Mode</div>
-                            </div>
-                            <div class="badge rounded-lg p-3 text-center" title="Speed demon">
-                                <div class="text-2xl mb-1">⚡</div>
-                                <div class="text-xs">Lightning</div>
-                            </div>
+                        <div class="stat-card">
+                            <div class="text-2xl text-glow-pink" id="streakDays">0</div>
+                            <div class="text-sm">Day Streak</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Edit Profile Modal -->
-    <div id="editModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-        <div class="retro-panel rounded-xl p-6 max-w-md w-full mx-4">
-            <h3 class="text-xl text-glow-blue mb-4">Edit Profile</h3>
-            <form id="editForm">
-                <div class="mb-4">
-                    <label class="block text-sm text-gray-300 mb-2">Name</label>
-                    <input type="text" id="editName" class="w-full p-2 bg-gray-800 border border-blue-500 rounded text-white">
+        <!-- Edit Profile -->
+        <div class="retro-panel">
+            <h3 class="text-xl text-glow-pink mb-4">EDIT PROFILE</h3>
+            <form id="profileForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm mb-2">Username</label>
+                        <input type="text" id="editUsername" class="retro-input" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2">College</label>
+                        <input type="text" id="editCollege" class="retro-input" placeholder="Optional">
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm text-gray-300 mb-2">Headline</label>
-                    <input type="text" id="editHeadline" class="w-full p-2 bg-gray-800 border border-blue-500 rounded text-white">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm text-gray-300 mb-2">University</label>
-                    <input type="text" id="editUniversity" class="w-full p-2 bg-gray-800 border border-blue-500 rounded text-white">
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-bold">Save</button>
-                    <button type="button" onclick="closeEditModal()" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white font-bold">Cancel</button>
+                <div class="flex gap-4">
+                    <button type="submit" class="retro-btn">UPDATE PROFILE</button>
+                    <button type="button" id="changePasswordBtn" class="retro-btn">CHANGE PASSWORD</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Profile data
-        const profileData = {
-            name: "CodeMaster",
-            headline: "New User",
-            university: "Unknown",
-            xp: 0,
-            level: 1,
-            streak: 0,
-            problemsSolved: 0,
-            successRate: 0,
-            avgTime: "0m",
-            rank: 0,
-            isOwnProfile: true
-        };
+        const API_BASE = 'http://localhost:3000';
+        const AUTH_TOKEN = localStorage.getItem('token') || '';
         
-        async function loadProfileData() {
-            const token = localStorage.getItem('codecade_token');
-            if (!token) return;
-            
+        if (!AUTH_TOKEN) {
+            window.location.href = 'index.html';
+        }
+
+        async function loadProfile() {
             try {
-                const statsRes = await fetch('http://localhost:8080/user/stats', {
-                    headers: { 'Authorization': 'Bearer ' + token }
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
                 });
-                const stats = await statsRes.json();
-                
-                const progressRes = await fetch('http://localhost:8080/user/progress', {
-                    headers: { 'Authorization': 'Bearer ' + token }
+                const user = await response.json();
+
+                document.getElementById('username').textContent = user.username;
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userLevel').textContent = user.level;
+                document.getElementById('userXP').textContent = user.xp;
+                document.getElementById('battleRating').textContent = user.battle_rating;
+                document.getElementById('editUsername').value = user.username;
+                document.getElementById('editCollege').value = user.college || '';
+
+                // Load stats
+                const statsResponse = await fetch(`${API_BASE}/api/user/stats`, {
+                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
                 });
-                const progress = await progressRes.json();
-                
-                profileData.name = stats.username || 'Player';
-                profileData.university = stats.college || 'Unknown';
-                profileData.xp = stats.xp || 0;
-                profileData.level = stats.level || 1;
-                profileData.streak = stats.streak_days || 0;
-                profileData.problemsSolved = progress.totalSolved || 0;
-                profileData.successRate = progress.totalSolved > 0 ? 100 : 0;
-                profileData.avgTime = progress.totalSolved > 0 ? '15m' : '0m';
-                profileData.rank = 3;
-                
-                initProfile();
+                const stats = await statsResponse.json();
+
+                document.getElementById('problemsSolved').textContent = stats.problemsSolved;
+                document.getElementById('lessonsCompleted').textContent = stats.lessonsCompleted;
+                document.getElementById('battleWins').textContent = user.battle_wins;
+                document.getElementById('streakDays').textContent = stats.currentStreak;
+
             } catch (error) {
                 console.error('Failed to load profile:', error);
-                initProfile();
-            }
-        }
-        
-        loadProfileData();
-
-        // Initialize profile
-        function initProfile() {
-            document.getElementById('profileName').textContent = profileData.name;
-            document.getElementById('profileHeadline').textContent = profileData.headline;
-            document.getElementById('userXP').textContent = profileData.xp.toLocaleString();
-            document.getElementById('userLevel').textContent = profileData.level;
-            document.getElementById('userStreak').textContent = profileData.streak;
-            document.getElementById('collegeCard').textContent = profileData.university;
-            document.getElementById('xpCard').textContent = `${profileData.xp.toLocaleString()} XP`;
-            document.getElementById('streakCard').textContent = `${profileData.streak} Days`;
-            document.getElementById('problemsSolved').textContent = profileData.problemsSolved;
-            document.getElementById('successRate').textContent = `${profileData.successRate}%`;
-            document.getElementById('avgTime').textContent = profileData.avgTime;
-            document.getElementById('globalRank').textContent = `#${profileData.rank.toLocaleString()}`;
-            
-            // Show edit button if own profile
-            if (profileData.isOwnProfile) {
-                document.getElementById('editBtn').classList.remove('hidden');
-                document.getElementById('deleteBtn').classList.remove('hidden');
-                document.getElementById('followBtn').classList.add('hidden');
-            }
-            
-            // Set avatar initial
-            document.getElementById('profileAvatar').textContent = profileData.name.charAt(0);
-        }
-
-        // Toggle sections
-        function toggleSection(sectionName) {
-            const section = document.getElementById(sectionName + 'Section');
-            const toggle = document.getElementById(sectionName + 'Toggle');
-            
-            if (section.classList.contains('hidden')) {
-                section.classList.remove('hidden');
-                toggle.textContent = '▼';
-            } else {
-                section.classList.add('hidden');
-                toggle.textContent = '▶';
+                alert('Failed to load profile data');
             }
         }
 
-        // Edit modal functions
-        function openEditModal() {
-            document.getElementById('editName').value = profileData.name;
-            document.getElementById('editHeadline').value = profileData.headline;
-            document.getElementById('editUniversity').value = profileData.university;
-            document.getElementById('editModal').classList.remove('hidden');
-            document.getElementById('editModal').classList.add('flex');
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
-            document.getElementById('editModal').classList.remove('flex');
-        }
-
-        // Event listeners
-        document.getElementById('editBtn').addEventListener('click', openEditModal);
-        
-        document.getElementById('deleteBtn').addEventListener('click', async function() {
-            if (!confirm('Are you sure you want to delete your profile? This action cannot be undone.')) return;
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            const token = localStorage.getItem('codecade_token');
-            if (!token) return;
-            
+            const username = document.getElementById('editUsername').value;
+            const college = document.getElementById('editCollege').value;
+
             try {
-                const res = await fetch('http://localhost:8080/user/profile', {
-                    method: 'DELETE',
-                    headers: { 'Authorization': 'Bearer ' + token }
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${AUTH_TOKEN}`
+                    },
+                    body: JSON.stringify({ username, college })
                 });
-                
-                if (res.ok) {
-                    alert('Profile deleted successfully');
-                    localStorage.removeItem('codecade_token');
-                    window.location.href = 'index.html';
+
+                if (response.ok) {
+                    alert('Profile updated successfully!');
+                    loadProfile();
                 } else {
-                    alert('Failed to delete profile');
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
                 }
             } catch (error) {
-                console.error('Delete error:', error);
-                alert('Error deleting profile');
-            }
-        });
-        
-        document.getElementById('editForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Update profile data (would normally be API call)
-            profileData.name = document.getElementById('editName').value;
-            profileData.headline = document.getElementById('editHeadline').value;
-            profileData.university = document.getElementById('editUniversity').value;
-            
-            // Update UI
-            initProfile();
-            closeEditModal();
-        });
-
-        document.getElementById('followBtn').addEventListener('click', function() {
-            const btn = this;
-            if (btn.textContent === 'Follow') {
-                btn.textContent = 'Following ✓';
-                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                btn.classList.add('bg-green-600', 'hover:bg-green-700');
-            } else {
-                btn.textContent = 'Follow';
-                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                console.error('Update error:', error);
+                alert('Failed to update profile');
             }
         });
 
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', initProfile);
-
-        // Close modal on outside click
-        document.getElementById('editModal').addEventListener('click', function(e) {
-            if (e.target === this) closeEditModal();
+        document.getElementById('changePasswordBtn').addEventListener('click', () => {
+            alert('Password change feature coming soon!');
         });
+
+        loadProfile();
     </script>
 </body>
 </html>
