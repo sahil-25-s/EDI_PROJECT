@@ -1,0 +1,11 @@
+{
+  "name": "codecade-database",
+  "version": "1.0.0",
+  "scripts": {
+    "seed": "node seed_problems.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.3.0",
+    "dotenv": "^16.3.1"
+  }
+}

@@ -2,17 +2,41 @@ from flask import Blueprint, jsonify, request
 from middleware.auth import auth_required
 from models.problem_model import solve_problem, get_solved_problems
 from models.user_model import update_user_xp
+from db.mongodb import get_db
 import random
 
 problem_bp = Blueprint('problem', __name__)
 
 @problem_bp.route('/', methods=['GET'])
 def get_problems():
-    return jsonify({'problems': []})
+    db = get_db()
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 20))
+    difficulty = request.args.get('difficulty')
+    
+    query = {}
+    if difficulty and difficulty != 'all':
+        diff_map = {'easy': 'Easy', 'intermediate': 'Medium', 'expert': 'Hard'}
+        query['difficulty'] = diff_map.get(difficulty, difficulty)
+    
+    skip = (page - 1) * limit
+    problems = list(db.problems.find(query).skip(skip).limit(limit))
+    
+    for p in problems:
+        p['_id'] = str(p['_id'])
+    
+    total = db.problems.count_documents(query)
+    has_more = skip + limit < total
+    
+    return jsonify({'problems': problems, 'hasMore': has_more, 'total': total})
 
 @problem_bp.route('/<problem_id>', methods=['GET'])
 def get_problem(problem_id):
-    return jsonify({'problem': {}})
+    db = get_db()
+    problem = db.problems.find_one({'id': problem_id})
+    if problem:
+        problem['_id'] = str(problem['_id'])
+    return jsonify({'problem': problem or {}})
 
 @problem_bp.route('/solve', methods=['POST'])
 @auth_required
