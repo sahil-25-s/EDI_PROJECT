@@ -130,3 +130,22 @@ async function getBattleHistory() {
   });
   return await response.json();
 }
+
+// Delete Profile
+async function deleteProfile() {
+  if (!confirm('Are you sure you want to delete your profile? This action cannot be undone.')) {
+    return { success: false, cancelled: true };
+  }
+  
+  const response = await fetch(`${API_URL}/api/user/profile`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+  
+  if (response.ok) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    return { success: true };
+  }
+  return { success: false, error: 'Failed to delete profile' };
+}

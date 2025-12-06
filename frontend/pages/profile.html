@@ -154,71 +154,15 @@
                     </div>
                 </div>
                 
-                <div>
-                    <label class="block text-sm mb-2">Bio</label>
-                    <textarea id="editBio" class="retro-input" rows="3" placeholder="Tell us about yourself..."></textarea>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm mb-2">GitHub URL</label>
-                        <input type="url" id="editGithub" class="retro-input" placeholder="https://github.com/username">
-                    </div>
-                    <div>
-                        <label class="block text-sm mb-2">LinkedIn URL</label>
-                        <input type="url" id="editLinkedin" class="retro-input" placeholder="https://linkedin.com/in/username">
-                    </div>
-                    <div>
-                        <label class="block text-sm mb-2">Portfolio URL</label>
-                        <input type="url" id="editPortfolio" class="retro-input" placeholder="https://yourportfolio.com">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm mb-2">Skills (comma separated)</label>
-                    <input type="text" id="editSkills" class="retro-input" placeholder="JavaScript, Python, React, Node.js">
-                </div>
-                
-                <div>
-                    <label class="block text-sm mb-2">Projects (JSON format)</label>
-                    <textarea id="editProjects" class="retro-input" rows="4" placeholder='[{"name":"Project Name","description":"Description","tech":"Tech Stack","url":"https://project.com"}]'></textarea>
-                </div>
-                
-                <div>
-                    <label class="block text-sm mb-2">Certifications (JSON format)</label>
-                    <textarea id="editCertifications" class="retro-input" rows="3" placeholder='[{"name":"Certification Name","issuer":"Issuing Organization","date":"2024","url":"https://cert.com"}]'></textarea>
-                </div>
-                
                 <div class="flex gap-4">
                     <button type="submit" class="retro-btn">UPDATE PROFILE</button>
                     <button type="button" id="changePasswordBtn" class="retro-btn">CHANGE PASSWORD</button>
+                    <button type="button" id="deleteProfileBtn" class="retro-btn" style="border-color: #ff1493; color: #ff1493;">DELETE PROFILE</button>
                 </div>
             </form>
         </div>
         
-        <!-- Projects Section -->
-        <div class="retro-panel" id="projectsSection">
-            <h3 class="text-xl text-glow-purple mb-4">PROJECTS</h3>
-            <div id="projectsList">
-                <div class="text-center text-gray-500">No projects added yet.</div>
-            </div>
-        </div>
-        
-        <!-- Certifications Section -->
-        <div class="retro-panel" id="certificationsSection">
-            <h3 class="text-xl text-glow-cyan mb-4">CERTIFICATIONS</h3>
-            <div id="certificationsList">
-                <div class="text-center text-gray-500">No certifications added yet.</div>
-            </div>
-        </div>
-        
-        <!-- Links Section -->
-        <div class="retro-panel" id="linksSection">
-            <h3 class="text-xl text-glow-pink mb-4">LINKS & SOCIAL</h3>
-            <div id="linksList" class="flex flex-wrap gap-4">
-                <!-- Links will be populated here -->
-            </div>
-        </div>
+
     </div>
 
     <script>
@@ -243,18 +187,6 @@
                 document.getElementById('battleRating').textContent = user.battle_rating;
                 document.getElementById('editUsername').value = user.username;
                 document.getElementById('editCollege').value = user.college || '';
-                document.getElementById('editBio').value = user.bio || '';
-                document.getElementById('editGithub').value = user.github_url || '';
-                document.getElementById('editLinkedin').value = user.linkedin_url || '';
-                document.getElementById('editPortfolio').value = user.portfolio_url || '';
-                document.getElementById('editSkills').value = user.skills || '';
-                document.getElementById('editProjects').value = user.projects || '';
-                document.getElementById('editCertifications').value = user.certifications || '';
-                
-                // Display projects
-                displayProjects(user.projects);
-                displayCertifications(user.certifications);
-                displayLinks(user);
 
                 // Load stats
                 const statsResponse = await fetch(`${API_BASE}/api/user/stats`, {
@@ -278,13 +210,6 @@
             
             const username = document.getElementById('editUsername').value;
             const college = document.getElementById('editCollege').value;
-            const bio = document.getElementById('editBio').value;
-            const github_url = document.getElementById('editGithub').value;
-            const linkedin_url = document.getElementById('editLinkedin').value;
-            const portfolio_url = document.getElementById('editPortfolio').value;
-            const skills = document.getElementById('editSkills').value;
-            const projects = document.getElementById('editProjects').value;
-            const certifications = document.getElementById('editCertifications').value;
 
             try {
                 const response = await fetch(`${API_BASE}/api/user/profile`, {
@@ -293,10 +218,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${AUTH_TOKEN}`
                     },
-                    body: JSON.stringify({ 
-                        username, college, bio, github_url, linkedin_url, 
-                        portfolio_url, skills, projects, certifications 
-                    })
+                    body: JSON.stringify({ username, college })
                 });
 
                 if (response.ok) {
@@ -316,74 +238,36 @@
             alert('Password change feature coming soon!');
         });
 
-        function displayProjects(projectsJson) {
-            const container = document.getElementById('projectsList');
+        document.getElementById('deleteProfileBtn').addEventListener('click', async () => {
+            if (!confirm('⚠️ WARNING: This will permanently delete your account and all data. This action cannot be undone!\n\nType "DELETE" to confirm:')) {
+                return;
+            }
+            
+            const confirmation = prompt('Type DELETE to confirm account deletion:');
+            if (confirmation !== 'DELETE') {
+                alert('Account deletion cancelled.');
+                return;
+            }
             
             try {
-                const projects = projectsJson ? JSON.parse(projectsJson) : [];
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+                });
                 
-                if (projects.length === 0) {
-                    container.innerHTML = '<div class="text-center text-gray-500">No projects added yet.</div>';
-                    return;
+                if (response.ok) {
+                    alert('Your account has been deleted.');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Failed to delete account. Please try again.');
                 }
-                
-                container.innerHTML = projects.map(project => `
-                    <div class="bg-gray-800 p-4 rounded mb-4 border border-gray-600">
-                        <h4 class="text-lg text-glow-cyan mb-2">${project.name}</h4>
-                        <p class="text-gray-300 mb-2">${project.description}</p>
-                        <div class="text-sm text-gray-400 mb-2">Tech: ${project.tech}</div>
-                        ${project.url ? `<a href="${project.url}" target="_blank" class="text-blue-400 hover:text-blue-300">View Project →</a>` : ''}
-                    </div>
-                `).join('');
             } catch (error) {
-                container.innerHTML = '<div class="text-center text-red-400">Invalid projects format</div>';
+                console.error('Delete error:', error);
+                alert('Failed to delete account. Please try again.');
             }
-        }
-        
-        function displayCertifications(certificationsJson) {
-            const container = document.getElementById('certificationsList');
-            
-            try {
-                const certifications = certificationsJson ? JSON.parse(certificationsJson) : [];
-                
-                if (certifications.length === 0) {
-                    container.innerHTML = '<div class="text-center text-gray-500">No certifications added yet.</div>';
-                    return;
-                }
-                
-                container.innerHTML = certifications.map(cert => `
-                    <div class="bg-gray-800 p-4 rounded mb-4 border border-gray-600">
-                        <h4 class="text-lg text-glow-purple mb-2">${cert.name}</h4>
-                        <div class="text-gray-300 mb-1">Issued by: ${cert.issuer}</div>
-                        <div class="text-sm text-gray-400 mb-2">Date: ${cert.date}</div>
-                        ${cert.url ? `<a href="${cert.url}" target="_blank" class="text-blue-400 hover:text-blue-300">View Certificate →</a>` : ''}
-                    </div>
-                `).join('');
-            } catch (error) {
-                container.innerHTML = '<div class="text-center text-red-400">Invalid certifications format</div>';
-            }
-        }
-        
-        function displayLinks(user) {
-            const container = document.getElementById('linksList');
-            const links = [];
-            
-            if (user.github_url) {
-                links.push(`<a href="${user.github_url}" target="_blank" class="retro-btn text-sm">🐙 GitHub</a>`);
-            }
-            if (user.linkedin_url) {
-                links.push(`<a href="${user.linkedin_url}" target="_blank" class="retro-btn text-sm">💼 LinkedIn</a>`);
-            }
-            if (user.portfolio_url) {
-                links.push(`<a href="${user.portfolio_url}" target="_blank" class="retro-btn text-sm">🌐 Portfolio</a>`);
-            }
-            
-            if (links.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-500">No links added yet.</div>';
-            } else {
-                container.innerHTML = links.join('');
-            }
-        }
+        });
 
         loadProfile();
     </script>

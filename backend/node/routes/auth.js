@@ -36,8 +36,8 @@ router.post('/register', async (req, res) => {
                         }
 
                         const token = jwt.sign(
-                            { userId: this.lastID, email },
-                            process.env.JWT_SECRET,
+                            { userId: this.lastID, email, role: 'user' },
+                            process.env.JWT_SECRET || 'codecade_secret_key_2024_secure',
                             { expiresIn: '24h' }
                         );
 
@@ -91,7 +91,7 @@ router.post('/login', (req, res) => {
 
                 const token = jwt.sign(
                     { userId: user.id, email: user.email, role: user.role || 'user' },
-                    process.env.JWT_SECRET,
+                    process.env.JWT_SECRET || 'codecade_secret_key_2024_secure',
                     { expiresIn: '24h' }
                 );
 

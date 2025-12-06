@@ -290,7 +290,10 @@
         <div class="section">
             <div class="tabs">
                 <div class="tab active" onclick="showTab('users')">Users</div>
+                <div class="tab" onclick="showTab('pending')">Pending Approvals</div>
                 <div class="tab" onclick="showTab('codes')">All Codes</div>
+                <div class="tab" onclick="showTab('problems')">Problems</div>
+                <div class="tab" onclick="showTab('mcq')">MCQ Questions</div>
                 <div class="tab" onclick="showTab('system')">System</div>
             </div>
 
@@ -314,6 +317,23 @@
                 </table>
             </div>
 
+            <div id="pending-tab" class="tab-content">
+                <h2>Pending Code Approvals</h2>
+                <table class="table" id="pending-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Problem</th>
+                            <th>Language</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
             <div id="codes-tab" class="tab-content">
                 <h2>All Code Submissions</h2>
                 <table class="table" id="codes-table">
@@ -324,6 +344,143 @@
                             <th>Problem</th>
                             <th>Language</th>
                             <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="mcq-tab" class="tab-content">
+                <h2>MCQ Question Management</h2>
+                <button class="view-btn" onclick="showAddMCQForm()" style="margin-bottom: 1rem;">Add New MCQ</button>
+                
+                <div id="add-mcq-form" class="stat-card" style="display: none; margin-bottom: 2rem;">
+                    <h3 style="color: #00ff41; margin-bottom: 1rem;">Add New MCQ Question</h3>
+                    <form onsubmit="addMCQ(event)">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #cccccc;">Question:</label>
+                            <textarea id="mcq-question" required rows="3" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;"></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="color: #cccccc;">Option A:</label>
+                                <input type="text" id="mcq-option-a" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                            </div>
+                            <div>
+                                <label style="color: #cccccc;">Option B:</label>
+                                <input type="text" id="mcq-option-b" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                            </div>
+                            <div>
+                                <label style="color: #cccccc;">Option C:</label>
+                                <input type="text" id="mcq-option-c" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                            </div>
+                            <div>
+                                <label style="color: #cccccc;">Option D:</label>
+                                <input type="text" id="mcq-option-d" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="color: #cccccc;">Correct Answer (0-3):</label>
+                                <select id="mcq-correct" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                                    <option value="0">A</option>
+                                    <option value="1">B</option>
+                                    <option value="2">C</option>
+                                    <option value="3">D</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="color: #cccccc;">Difficulty:</label>
+                                <select id="mcq-difficulty" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                                    <option value="easy">Easy</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="hard">Hard</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="view-btn">Add MCQ</button>
+                            <button type="button" class="delete-btn" onclick="hideAddMCQForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <table class="table" id="mcq-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Question</th>
+                            <th>Difficulty</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="problems-tab" class="tab-content">
+                <h2>Problem Management</h2>
+                <div style="margin-bottom: 2rem;">
+                    <button class="view-btn" onclick="showAddProblemForm()" style="margin-bottom: 1rem;">
+                        Add New Problem
+                    </button>
+                </div>
+                
+                <div id="add-problem-form" class="stat-card" style="display: none; margin-bottom: 2rem;">
+                    <h3 style="color: #00ff41; margin-bottom: 1rem;">Add New Problem</h3>
+                    <form onsubmit="addProblem(event)">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="color: #cccccc;">Problem ID:</label>
+                                <input type="text" id="problem-id" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                            </div>
+                            <div>
+                                <label style="color: #cccccc;">Difficulty:</label>
+                                <select id="problem-difficulty" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                                    <option value="easy">Easy</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="hard">Hard</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #cccccc;">Title:</label>
+                            <input type="text" id="problem-title" required style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #cccccc;">Description:</label>
+                            <textarea id="problem-description" required rows="4" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;"></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="color: #cccccc;">Input Format:</label>
+                                <textarea id="problem-input" required rows="2" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;"></textarea>
+                            </div>
+                            <div>
+                                <label style="color: #cccccc;">Output Format:</label>
+                                <textarea id="problem-output" required rows="2" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;"></textarea>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #cccccc;">Example (Input → Output):</label>
+                            <textarea id="problem-example" required rows="3" placeholder="Input: 5\nOutput: 120" style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px;"></textarea>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="view-btn">Add Problem</button>
+                            <button type="button" class="delete-btn" onclick="hideAddProblemForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <table class="table" id="problems-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Difficulty</th>
+                            <th>Created</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -369,6 +526,43 @@
             alert('Admin access required');
             window.location.href = '/';
         }
+
+        // Additional password verification for admin
+        const adminPassword = prompt('Enter admin password to continue:');
+        if (adminPassword !== 'admin123') {
+            alert('Incorrect admin password');
+            window.location.href = '/';
+        }
+
+        // Verify admin access with server
+        fetch('http://localhost:3000/api/admin/verify', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        }).then(res => {
+            if (!res.ok) {
+                alert('Unauthorized access. Admin privileges required.');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            }
+        }).catch(() => {
+            alert('Unable to verify admin access');
+            window.location.href = '/';
+        });
+
+        // Verify admin access with server
+        fetch('http://localhost:3000/api/admin/verify', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        }).then(res => {
+            if (!res.ok) {
+                alert('Unauthorized access. Admin privileges required.');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            }
+        }).catch(() => {
+            alert('Unable to verify admin access');
+            window.location.href = '/';
+        });
 
         // Load dashboard data
         async function loadStats() {
@@ -439,9 +633,11 @@
                         <td>${code.language}</td>
                         <td>${new Date(code.solved_at).toLocaleDateString()}</td>
                         <td>
-                            <button class="view-btn" onclick="viewCode('${code.problem_id}', '${code.username}', '${code.language}', \`${code.solution.replace(/`/g, '\\`')}\`, ${code.user_id}, ${code.id})">
+                            <button class="view-btn" onclick="viewCode('${code.problem_id}', '${code.username}', '${code.language}', \`${code.solution.replace(/`/g, '\\`')}\`, ${code.user_id}, ${code.id}, false)">
                                 View Code
                             </button>
+                            ${code.approved ? '<span style="color: #00ff41; margin-left: 0.5rem;">✓ Approved</span>' : '<span style="color: #ffa500; margin-left: 0.5rem;">⏳ Pending</span>'}
+                            <button class="delete-btn" onclick="deleteSubmission(${code.id}, '${code.username}', '${code.problem_id}')">Delete</button>
                         </td>
                     </tr>
                 `).join('');
@@ -479,16 +675,19 @@
             }
         }
 
-        function viewCode(problemId, username, language, solution, userId, submissionId) {
+        function viewCode(problemId, username, language, solution, userId, submissionId, isPending = false) {
             document.getElementById('modal-title').textContent = `Code Submission - ${problemId}`;
             document.getElementById('modal-details').innerHTML = `
                 <p><strong>User:</strong> ${username}</p>
                 <p><strong>Problem:</strong> ${problemId}</p>
                 <p><strong>Language:</strong> ${language}</p>
-                <div style="margin-top: 1rem;">
-                    <label style="color: #00ff41;">Award Points:</label>
-                    <input type="number" id="points-input" min="0" max="100" value="10" style="margin: 0 0.5rem; padding: 0.3rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px; width: 80px;">
-                    <button class="view-btn" onclick="awardPoints(${userId}, ${submissionId})" style="margin-left: 0.5rem;">Award Points</button>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,255,65,0.1); border: 1px solid #00ff41; border-radius: 5px;">
+                    <label style="color: #00ff41; font-size: 1.2rem;">Approve & Award XP:</label>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+                        <input type="number" id="xp-input" min="0" max="200" value="50" style="padding: 0.5rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px; width: 100px; font-size: 1.1rem;">
+                        <span style="color: #cccccc;">XP Points (0-200)</span>
+                        <button class="view-btn" onclick="approveCode(${userId}, ${submissionId})" style="margin-left: auto;">✓ Approve & Award</button>
+                    </div>
                 </div>
             `;
             document.getElementById('modal-code').textContent = solution;
@@ -515,8 +714,14 @@
             // Load data for the tab
             if (tabName === 'users') {
                 loadUsers();
+            } else if (tabName === 'pending') {
+                loadPendingCodes();
             } else if (tabName === 'codes') {
                 loadAllCodes();
+            } else if (tabName === 'problems') {
+                loadProblems();
+            } else if (tabName === 'mcq') {
+                loadMCQs();
             } else if (tabName === 'system') {
                 loadSystemInfo();
             }
@@ -639,34 +844,307 @@
             }
         }
 
-        async function awardPoints(userId, submissionId) {
-            const points = parseInt(document.getElementById('points-input').value);
-            if (!points || points < 0) {
-                alert('Please enter valid points (0-100)');
+        async function approveCode(userId, submissionId) {
+            const xpPoints = parseInt(document.getElementById('xp-input').value);
+            if (isNaN(xpPoints) || xpPoints < 0 || xpPoints > 200) {
+                alert('Please enter valid XP points (0-200)');
+                return;
+            }
+            
+            if (!confirm(`Approve this code and award ${xpPoints} XP to the student?`)) {
                 return;
             }
             
             try {
-                const response = await fetch('http://localhost:3000/api/admin/award-points', {
+                const response = await fetch('http://localhost:3000/api/admin/approve-code', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ userId, submissionId, points })
+                    body: JSON.stringify({ userId, submissionId, xpPoints })
                 });
                 
                 if (response.ok) {
-                    alert(`Successfully awarded ${points} points!`);
+                    const result = await response.json();
+                    alert(result.message);
                     closeModal();
+                    loadStats();
+                    loadPendingCodes();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error approving code:', error);
+                alert('Error approving code');
+            }
+        }
+
+        async function loadPendingCodes() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/pending-codes', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const codes = await response.json();
+                
+                const tbody = document.querySelector('#pending-table tbody');
+                if (codes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #cccccc;">No pending submissions</td></tr>';
+                } else {
+                    tbody.innerHTML = codes.map(code => `
+                        <tr style="background: rgba(255, 165, 0, 0.1);">
+                            <td>${code.id}</td>
+                            <td>${code.username} (${code.email})</td>
+                            <td>${code.problem_id}</td>
+                            <td>${code.language}</td>
+                            <td>${new Date(code.solved_at).toLocaleDateString()}</td>
+                            <td>
+                                <button class="view-btn" onclick="viewCode('${code.problem_id}', '${code.username}', '${code.language}', \`${code.solution.replace(/`/g, '\\`')}\`, ${code.user_id}, ${code.id}, true)">
+                                    Review & Approve
+                                </button>
+                                <button class="delete-btn" onclick="deleteSubmission(${code.id}, '${code.username}', '${code.problem_id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading pending codes:', error);
+            }
+        }
+
+        function showAddProblemForm() {
+            document.getElementById('add-problem-form').style.display = 'block';
+        }
+
+        function hideAddProblemForm() {
+            document.getElementById('add-problem-form').style.display = 'none';
+            document.getElementById('add-problem-form').querySelector('form').reset();
+        }
+
+        async function addProblem(event) {
+            event.preventDefault();
+            
+            const problemData = {
+                id: document.getElementById('problem-id').value,
+                title: document.getElementById('problem-title').value,
+                description: document.getElementById('problem-description').value,
+                difficulty: document.getElementById('problem-difficulty').value,
+                input_format: document.getElementById('problem-input').value,
+                output_format: document.getElementById('problem-output').value,
+                example: document.getElementById('problem-example').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/problems', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(problemData)
+                });
+                
+                if (response.ok) {
+                    alert('Problem added successfully!');
+                    hideAddProblemForm();
+                    loadProblems();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error adding problem:', error);
+                alert('Error adding problem');
+            }
+        }
+
+        async function loadProblems() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/problems', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const problems = await response.json();
+                
+                const tbody = document.querySelector('#problems-table tbody');
+                tbody.innerHTML = problems.map(problem => `
+                    <tr>
+                        <td>${problem.id}</td>
+                        <td>${problem.title}</td>
+                        <td><span style="color: ${problem.difficulty === 'easy' ? '#00ff41' : problem.difficulty === 'medium' ? '#ffa500' : '#ff1493'}">${problem.difficulty.toUpperCase()}</span></td>
+                        <td>${new Date(problem.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="view-btn" onclick="viewProblem('${problem.id}')">
+                                View
+                            </button>
+                            <button class="delete-btn" onclick="deleteProblem('${problem.id}', '${problem.title}')">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading problems:', error);
+            }
+        }
+
+        async function deleteProblem(problemId, title) {
+            if (!confirm(`⚠️ Delete problem "${title}"?\n\nThis will also delete all student submissions for this problem.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/problems/${problemId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    alert('✅ Problem and all related submissions deleted successfully');
+                    loadProblems();
                     loadStats();
                 } else {
                     const error = await response.json();
                     alert('Error: ' + error.error);
                 }
             } catch (error) {
-                console.error('Error awarding points:', error);
-                alert('Error awarding points');
+                console.error('Error deleting problem:', error);
+                alert('Error deleting problem');
+            }
+        }
+
+        async function deleteSubmission(submissionId, username, problemId) {
+            if (!confirm(`Delete ${username}'s submission for ${problemId}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/submissions/${submissionId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    alert('Submission deleted successfully');
+                    loadAllCodes();
+                    loadPendingCodes();
+                    loadStats();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error deleting submission:', error);
+                alert('Error deleting submission');
+            }
+        }
+
+        function viewProblem(problemId) {
+            window.open(`/problem.html?id=${problemId}`, '_blank');
+        }
+
+        function showAddMCQForm() {
+            document.getElementById('add-mcq-form').style.display = 'block';
+        }
+
+        function hideAddMCQForm() {
+            document.getElementById('add-mcq-form').style.display = 'none';
+            document.getElementById('add-mcq-form').querySelector('form').reset();
+        }
+
+        async function addMCQ(event) {
+            event.preventDefault();
+            
+            const mcqData = {
+                question: document.getElementById('mcq-question').value,
+                options: [
+                    document.getElementById('mcq-option-a').value,
+                    document.getElementById('mcq-option-b').value,
+                    document.getElementById('mcq-option-c').value,
+                    document.getElementById('mcq-option-d').value
+                ],
+                correct_answer: parseInt(document.getElementById('mcq-correct').value),
+                difficulty: document.getElementById('mcq-difficulty').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/mcq', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(mcqData)
+                });
+                
+                if (response.ok) {
+                    alert('MCQ added successfully!');
+                    hideAddMCQForm();
+                    loadMCQs();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error adding MCQ:', error);
+                alert('Error adding MCQ');
+            }
+        }
+
+        async function loadMCQs() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/mcq', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const mcqs = await response.json();
+                
+                const tbody = document.querySelector('#mcq-table tbody');
+                if (mcqs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No MCQ questions yet</td></tr>';
+                } else {
+                    tbody.innerHTML = mcqs.map(mcq => {
+                        const options = typeof mcq.options === 'string' ? JSON.parse(mcq.options) : mcq.options;
+                        return `
+                            <tr>
+                                <td>${mcq.id}</td>
+                                <td>${mcq.question.substring(0, 60)}...</td>
+                                <td><span style="color: ${mcq.difficulty === 'easy' ? '#00ff41' : mcq.difficulty === 'medium' ? '#ffa500' : '#ff1493'}">${mcq.difficulty.toUpperCase()}</span></td>
+                                <td>${new Date(mcq.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    <button class="delete-btn" onclick="deleteMCQ(${mcq.id}, '${mcq.question.substring(0, 30)}...')">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Error loading MCQs:', error);
+            }
+        }
+
+        async function deleteMCQ(mcqId, question) {
+            if (!confirm(`Delete MCQ: "${question}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/mcq/${mcqId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    alert('MCQ deleted successfully');
+                    loadMCQs();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error deleting MCQ:', error);
+                alert('Error deleting MCQ');
             }
         }
 

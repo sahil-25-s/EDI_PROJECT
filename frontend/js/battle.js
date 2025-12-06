@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8080';
+const API_BASE = window.location.origin.includes('8080') ? 'http://localhost:8080' : 'http://localhost:3000';
 const AUTH_TOKEN = localStorage.getItem('token');
 let socket;
 let battleState = {
@@ -70,7 +70,7 @@ function setupEventListeners() {
 // Load User Stats
 async function loadUserStats() {
     try {
-        const response = await fetch(`${API_BASE}/battle/stats`, {
+        const response = await fetch(`${API_BASE}/api/battles/stats`, {
             headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
         });
         const stats = await response.json();
@@ -89,7 +89,7 @@ async function loadUserStats() {
 // Load Online Players
 async function loadOnlinePlayers() {
     try {
-        const response = await fetch(`${API_BASE}/battle/online`, {
+        const response = await fetch(`${API_BASE}/api/battles/online`, {
             headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
         });
         const players = await response.json();
@@ -158,7 +158,7 @@ async function startBattle(data) {
     
     // Load questions
     try {
-        const response = await fetch(`${API_BASE}/battle/${data.battleId}/questions`, {
+        const response = await fetch(`${API_BASE}/api/battles/${data.battleId}/questions`, {
             headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
         });
         battleState.questions = await response.json();
@@ -334,7 +334,7 @@ async function finishBattle() {
     const totalTime = Math.floor((Date.now() - battleState.startTime) / 1000);
     
     try {
-        const response = await fetch(`${API_BASE}/battle/${battleState.battleId}/finish`, {
+        const response = await fetch(`${API_BASE}/api/battles/${battleState.battleId}/finish`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${AUTH_TOKEN}`,

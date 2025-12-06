@@ -437,57 +437,35 @@ public:
             }
 
             switchTab('output');
-            showOutput('🔄 Running code...', 'info');
+            showOutput('🔄 Compiling and running code...', 'info');
             setLoading(true);
 
             try {
-                // Simulate code execution
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                const response = await fetch(`${API_BASE}/api/execute/run`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${AUTH_TOKEN}`
+                    },
+                    body: JSON.stringify({ code, language })
+                });
+
+                const result = await response.json();
                 
-                // Simulate actual code execution output
-                let output = '';
-                
-                if (language === 'python') {
-                    if (code.includes('print(')) {
-                        const printMatches = code.match(/print\([^)]*\)/g);
-                        if (printMatches) {
-                            printMatches.forEach(match => {
-                                const content = match.match(/print\(([^)]*)\)/)[1];
-                                let result = content.replace(/["']/g, '');
-                                output += result + '\n';
-                            });
-                        }
-                    } else {
-                        output = 'Code executed (no output)';
-                    }
-                } else if (language === 'javascript') {
-                    if (code.includes('console.log')) {
-                        const logMatches = code.match(/console\.log\([^)]*\)/g);
-                        if (logMatches) {
-                            logMatches.forEach(match => {
-                                const content = match.match(/console\.log\(([^)]*)\)/)[1];
-                                let result = content.replace(/["']/g, '');
-                                output += result + '\n';
-                            });
-                        }
-                    } else {
-                        output = 'Code executed (no output)';
-                    }
+                if (result.error) {
+                    // Show compilation or runtime errors
+                    showOutput(`❌ Error:\n\n${result.output}`, 'error');
                 } else {
-                    output = 'Code executed (no output)';
+                    // Show successful output
+                    showOutput(`✅ Output:\n\n${result.output}\n\n💡 Use SUBMIT to save your solution.`, 'success');
+                    renderTestCases([
+                        { input: 'Your Code', expected: 'Output', actual: result.output.trim(), passed: true }
+                    ]);
                 }
-                
-                if (!output.trim()) {
-                    output = 'Code executed (no output)';
-                }
-                
-                showOutput(`✅ Output:\n\n${output}\n💡 Use SUBMIT to save your solution.`, 'success');
-                renderTestCases([
-                    { input: 'Your Code', expected: 'Output', actual: output.trim(), passed: true }
-                ]);
                 
             } catch (error) {
-                showOutput('🚫 Runtime error occurred.', 'error');
+                console.error('Execution error:', error);
+                showOutput('🚫 Failed to execute code. Please check your syntax and try again.', 'error');
             } finally {
                 setLoading(false);
             }
@@ -520,6 +498,12 @@ public:
                     body: JSON.stringify({ solution: code, language })
                 });
 
+                if (!response.ok) {
+                    const error = await response.json();
+                    showOutput(`🚫 ${error.error || 'Submission failed'}`, 'error');
+                    return;
+                }
+                
                 const result = await response.json();
                 
                 if (result.success) {

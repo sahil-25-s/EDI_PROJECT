@@ -89,21 +89,69 @@ const problems = {
 
 // Get all problems
 router.get('/', (req, res) => {
-    const problemList = Object.values(problems).map(p => ({
-        id: p.id,
-        title: p.title,
-        difficulty: p.difficulty
-    }));
-    res.json(problemList);
+    db.all('SELECT id, title, difficulty FROM problems ORDER BY RANDOM()', (err, dbProblems) => {
+        if (err) {
+            console.error('Database error:', err);
+            // Fallback to hardcoded problems
+            const problemList = Object.values(problems).map(p => ({
+                id: p.id,
+                title: p.title,
+                difficulty: p.difficulty
+            }));
+            // Shuffle and return random 5
+            const shuffled = problemList.sort(() => Math.random() - 0.5);
+            return res.json(shuffled.slice(0, 5));
+        }
+        
+        // Combine database problems with hardcoded ones
+        const hardcodedProblems = Object.values(problems).map(p => ({
+            id: p.id,
+            title: p.title,
+            difficulty: p.difficulty
+        }));
+        
+        const allProblems = [...dbProblems, ...hardcodedProblems];
+        // Shuffle and return random 5
+        const shuffled = allProblems.sort(() => Math.random() - 0.5);
+        res.json(shuffled.slice(0, 5));
+    });
 });
 
 // Get specific problem
 router.get('/:id', (req, res) => {
-    const problem = problems[req.params.id];
-    if (!problem) {
-        return res.status(404).json({ error: 'Problem not found' });
-    }
-    res.json(problem);
+    const problemId = req.params.id;
+    
+    // First check database
+    db.get('SELECT * FROM problems WHERE id = ?', [problemId], (err, dbProblem) => {
+        if (err) {
+            console.error('Database error:', err);
+        }
+        
+        if (dbProblem) {
+            // Format database problem to match expected structure
+            const formattedProblem = {
+                id: dbProblem.id,
+                title: dbProblem.title,
+                difficulty: dbProblem.difficulty.charAt(0).toUpperCase() + dbProblem.difficulty.slice(1),
+                description: dbProblem.description,
+                examples: dbProblem.example ? [{
+                    input: dbProblem.example.split('\n')[0] || '',
+                    output: dbProblem.example.split('\n')[1] || '',
+                    explanation: ''
+                }] : [],
+                constraints: [],
+                xpReward: dbProblem.difficulty === 'easy' ? 50 : dbProblem.difficulty === 'medium' ? 75 : 100
+            };
+            return res.json(formattedProblem);
+        }
+        
+        // Fallback to hardcoded problems
+        const problem = problems[problemId];
+        if (!problem) {
+            return res.status(404).json({ error: 'Problem not found' });
+        }
+        res.json(problem);
+    });
 });
 
 // Submit solution
@@ -114,11 +162,6 @@ router.post('/:id/submit', authenticateToken, (req, res) => {
     
     if (!solution || !language) {
         return res.status(400).json({ error: 'Solution and language are required' });
-    }
-
-    const problem = problems[problemId];
-    if (!problem) {
-        return res.status(404).json({ error: 'Problem not found' });
     }
 
     // Check if already solved
@@ -137,51 +180,69 @@ router.post('/:id/submit', authenticateToken, (req, res) => {
                 });
             }
 
-            // Accept any solution with reasonable length
-            const isCorrect = solution.length > 10;
-            
-            if (isCorrect) {
-                // Save solution
-                db.run(`INSERT INTO solved_problems (user_id, problem_id, solution, language) VALUES (?, ?, ?, ?)`,
-                    [userId, problemId, solution, language], function(err) {
-                        if (err) {
-                            console.error('Error saving solution:', err);
-                            return res.status(500).json({ error: 'Failed to save solution' });
-                        }
+            // Get problem details (from DB or hardcoded)
+            db.get('SELECT * FROM problems WHERE id = ?', [problemId], (err, dbProblem) => {
+                let xpReward = 50;
+                let difficulty = 'easy';
+                
+                if (dbProblem) {
+                    difficulty = dbProblem.difficulty.toLowerCase();
+                    xpReward = difficulty === 'easy' ? 50 : difficulty === 'medium' ? 75 : 100;
+                } else if (problems[problemId]) {
+                    difficulty = problems[problemId].difficulty.toLowerCase();
+                    xpReward = problems[problemId].xpReward;
+                }
 
-                        // Update user XP and level
-                        const xpGained = problem.xpReward;
-                        db.get('SELECT xp, level FROM users WHERE id = ?', [userId], (err, user) => {
+                // Accept any solution with reasonable length
+                const isCorrect = solution.length > 10;
+                
+                if (isCorrect) {
+                    // Save solution with difficulty
+                    db.run(`INSERT INTO solved_problems (user_id, problem_id, solution, language, difficulty) VALUES (?, ?, ?, ?, ?)`,
+                        [userId, problemId, solution, language, difficulty], function(err) {
                             if (err) {
-                                console.error('Error getting user:', err);
-                                return;
+                                console.error('Error saving solution:', err);
+                                return res.status(500).json({ error: 'Failed to save solution' });
                             }
 
-                            const newXP = user.xp + xpGained;
-                            const newLevel = Math.floor(newXP / 100) + 1; // Level up every 100 XP
-                            
-                            db.run('UPDATE users SET xp = ?, level = ? WHERE id = ?', 
-                                [newXP, newLevel, userId], (err) => {
-                                    if (err) {
-                                        console.error('Error updating user XP:', err);
-                                    }
-                                });
-                        });
+                            // Update user XP and level
+                            db.get('SELECT xp, level FROM users WHERE id = ?', [userId], (err, user) => {
+                                if (err) {
+                                    console.error('Error getting user:', err);
+                                    return res.json({
+                                        success: true,
+                                        message: 'Solution accepted! +' + xpReward + ' XP',
+                                        testsPassed: 100,
+                                        xpGained: xpReward
+                                    });
+                                }
 
-                        res.json({
-                            success: true,
-                            message: 'Solution accepted! +' + xpGained + ' XP',
-                            testsPassed: 100,
-                            xpGained
+                                const newXP = user.xp + xpReward;
+                                const newLevel = Math.floor(newXP / 100) + 1;
+                                
+                                db.run('UPDATE users SET xp = ?, level = ? WHERE id = ?', 
+                                    [newXP, newLevel, userId], (err) => {
+                                        if (err) {
+                                            console.error('Error updating user XP:', err);
+                                        }
+                                    });
+
+                                res.json({
+                                    success: true,
+                                    message: 'Solution accepted! +' + xpReward + ' XP',
+                                    testsPassed: 100,
+                                    xpGained: xpReward
+                                });
+                            });
                         });
+                } else {
+                    res.json({
+                        success: false,
+                        message: 'Solution incorrect. Try again.',
+                        testsPassed: 0
                     });
-            } else {
-                res.json({
-                    success: false,
-                    message: 'Solution incorrect. Try again.',
-                    testsPassed: 0
-                });
-            }
+                }
+            });
         });
 });
 

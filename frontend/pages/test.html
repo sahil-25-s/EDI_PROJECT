@@ -174,33 +174,14 @@
     </div>
 
     <script>
-        const questions = [
-            {
-                question: "What is the time complexity of binary search?",
-                options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
-                correct: 1
-            },
-            {
-                question: "Which data structure uses LIFO (Last In, First Out) principle?",
-                options: ["Queue", "Stack", "Array", "Linked List"],
-                correct: 1
-            },
-            {
-                question: "What is the worst-case time complexity of quicksort?",
-                options: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"],
-                correct: 1
-            },
-            {
-                question: "In a binary tree, what is the maximum number of nodes at level 3?",
-                options: ["4", "6", "8", "16"],
-                correct: 2
-            },
-            {
-                question: "Which algorithm is used to find the shortest path in a weighted graph?",
-                options: ["BFS", "DFS", "Dijkstra's", "Binary Search"],
-                correct: 2
-            }
-        ];
+        const API_BASE = 'http://localhost:3000';
+        const AUTH_TOKEN = localStorage.getItem('token') || '';
+        
+        if (!AUTH_TOKEN) {
+            window.location.href = 'index.html';
+        }
+
+        let questions = [];
 
         let currentQuestion = 0;
         let answers = [];
@@ -208,7 +189,25 @@
         let timerInterval = null;
         let testStartTime = null;
 
-        function startTest() {
+        async function startTest() {
+            // Fetch random questions
+            try {
+                const response = await fetch(`${API_BASE}/api/mcq/random?count=5`, {
+                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
+                });
+                const data = await response.json();
+                
+                questions = data.map(q => ({
+                    question: q.question,
+                    options: typeof q.options === 'string' ? JSON.parse(q.options) : q.options,
+                    correct: q.correct_answer
+                }));
+            } catch (error) {
+                console.error('Failed to load questions:', error);
+                alert('Failed to load questions. Please try again.');
+                return;
+            }
+            
             document.getElementById('testInfo').classList.add('hidden');
             document.getElementById('progressSection').classList.remove('hidden');
             document.getElementById('questionSection').classList.remove('hidden');

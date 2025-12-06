@@ -27,35 +27,65 @@ router.get('/profile', authenticateToken, (req, res) => {
 router.get('/stats', authenticateToken, (req, res) => {
     const userId = req.user.userId;
     
-    // Get user info with XP and level
     db.get('SELECT xp, level FROM users WHERE id = ?', [userId], (err, user) => {
         if (err) {
-            console.error('Database error:', err);
             return res.status(500).json({ error: 'Database error' });
         }
 
-        // Get solved problems count
         db.get('SELECT COUNT(*) as solved_count FROM solved_problems WHERE user_id = ?', [userId], (err, solvedResult) => {
             if (err) {
-                console.error('Database error:', err);
                 return res.status(500).json({ error: 'Database error' });
             }
 
-            // Get completed lessons count
             db.get('SELECT COUNT(*) as lessons_count FROM completed_lessons WHERE user_id = ?', [userId], (err, lessonsResult) => {
                 if (err) {
-                    console.error('Database error:', err);
                     return res.status(500).json({ error: 'Database error' });
                 }
 
-                res.json({
-                    problemsSolved: solvedResult.solved_count || 0,
-                    lessonsCompleted: lessonsResult.lessons_count || 0,
-                    currentStreak: 0,
-                    totalXP: user?.xp || 0,
-                    level: user?.level || 1
+                db.all(`SELECT sp.*, p.title, p.difficulty as problem_difficulty 
+                        FROM solved_problems sp 
+                        LEFT JOIN problems p ON sp.problem_id = p.id 
+                        WHERE sp.user_id = ? 
+                        ORDER BY sp.solved_at DESC`, [userId], (err, problems) => {
+                    if (err) {
+                        return res.status(500).json({ error: 'Database error' });
+                    }
+
+                    // Ensure difficulty field exists
+                    const processedProblems = problems.map(p => ({
+                        ...p,
+                        difficulty: p.difficulty || p.problem_difficulty || 'easy',
+                        title: p.title || p.problem_id
+                    }));
+
+                    res.json({
+                        problemsSolved: solvedResult.solved_count || 0,
+                        lessonsCompleted: lessonsResult.lessons_count || 0,
+                        currentStreak: 0,
+                        totalXP: user?.xp || 0,
+                        level: user?.level || 1,
+                        totalSolved: solvedResult.solved_count || 0,
+                        problems: processedProblems
+                    });
                 });
             });
+        });
+    });
+});
+
+// Delete user profile
+router.delete('/profile', authenticateToken, (req, res) => {
+    const userId = req.user.userId;
+    
+    db.serialize(() => {
+        db.run('DELETE FROM solved_problems WHERE user_id = ?', [userId]);
+        db.run('DELETE FROM completed_lessons WHERE user_id = ?', [userId]);
+        db.run('DELETE FROM battles WHERE player1_id = ? OR player2_id = ?', [userId, userId]);
+        db.run('DELETE FROM users WHERE id = ?', [userId], function(err) {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to delete profile' });
+            }
+            res.json({ message: 'Profile deleted successfully' });
         });
     });
 });
@@ -63,40 +93,19 @@ router.get('/stats', authenticateToken, (req, res) => {
 // Update user profile
 router.put('/profile', authenticateToken, (req, res) => {
     const userId = req.user.userId;
-    const { username, college, bio, github_url, linkedin_url, portfolio_url, skills, projects, certifications } = req.body;
+    const { username, college } = req.body;
 
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
 
-    // First add new columns if they don't exist
-    const addColumns = [
-        'ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ""',
-        'ALTER TABLE users ADD COLUMN github_url TEXT DEFAULT ""',
-        'ALTER TABLE users ADD COLUMN linkedin_url TEXT DEFAULT ""',
-        'ALTER TABLE users ADD COLUMN portfolio_url TEXT DEFAULT ""',
-        'ALTER TABLE users ADD COLUMN skills TEXT DEFAULT ""',
-        'ALTER TABLE users ADD COLUMN projects TEXT DEFAULT ""',
-        'ALTER TABLE users ADD COLUMN certifications TEXT DEFAULT ""'
-    ];
-
-    addColumns.forEach(sql => {
-        db.run(sql, (err) => {
-            // Ignore errors if columns already exist
-        });
-    });
-
-    db.run(`UPDATE users SET username = ?, college = ?, bio = ?, github_url = ?, 
-            linkedin_url = ?, portfolio_url = ?, skills = ?, projects = ?, certifications = ? 
-            WHERE id = ?`, 
-        [username, college || '', bio || '', github_url || '', linkedin_url || '', 
-         portfolio_url || '', skills || '', projects || '', certifications || '', userId], 
+    db.run('UPDATE users SET username = ?, college = ? WHERE id = ?', 
+        [username, college || '', userId], 
         function(err) {
             if (err) {
                 console.error('Error updating user:', err);
                 return res.status(500).json({ error: 'Failed to update profile' });
             }
-
             res.json({ message: 'Profile updated successfully' });
         });
 });

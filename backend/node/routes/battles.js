@@ -123,6 +123,22 @@ router.post('/:id/submit', authenticateToken, (req, res) => {
         });
 });
 
+// Get battle stats
+router.get('/stats', authenticateToken, (req, res) => {
+    const userId = req.user.userId;
+    
+    db.get('SELECT battle_wins as wins, battle_losses as losses, battle_rating as rating FROM users WHERE id = ?', 
+        [userId], (err, stats) => {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.json(stats || { wins: 0, losses: 0, rating: 1200 });
+        });
+});
+
+// Get online players
+router.get('/online', authenticateToken, (req, res) => {
+    res.json([]);
+});
+
 // Get battle history
 router.get('/history', authenticateToken, (req, res) => {
     const userId = req.user.userId;

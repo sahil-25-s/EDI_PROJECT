@@ -31,6 +31,17 @@ async function initDatabase() {
       )`);
       
       // Create other tables
+      db.run(`CREATE TABLE IF NOT EXISTS problems (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        difficulty TEXT NOT NULL,
+        input_format TEXT,
+        output_format TEXT,
+        example TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`);
+      
       db.run(`CREATE TABLE IF NOT EXISTS solved_problems (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -38,7 +49,8 @@ async function initDatabase() {
         solution TEXT,
         language TEXT,
         solved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users (id)
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        FOREIGN KEY (problem_id) REFERENCES problems (id)
       )`);
       
       db.run(`CREATE TABLE IF NOT EXISTS completed_lessons (

@@ -105,11 +105,11 @@
         }
 
         .heatmap-cell {
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
             border: 1px solid var(--neon-purple);
-            border-radius: 2px;
-            margin: 1px;
+            border-radius: 3px;
+            margin: 2px;
         }
 
         .modal {
@@ -317,24 +317,25 @@
                 });
                 const data = await response.json();
                 
-                // Transform data to match dashboard format
+                const problems = data.problems || [];
+                const weeklyData = processWeeklyData(problems);
+                const topicData = processTopicData(problems);
+                const diffData = processDifficultyData(problems);
+                
                 dashboardData = {
                     summary: {
                         totalSolved: data.totalSolved || 0,
                         totalAttempted: data.totalSolved || 0,
                         successRate: 100,
-                        avgTimePerProblemSec: 600,
-                        currentStreakDays: 0
+                        avgTimePerProblemSec: calculateAvgTime(problems),
+                        currentStreakDays: calculateStreak(problems)
                     },
-                    trend: [],
-                    topicStats: [],
-                    difficultyBreakdown: {
-                        easy: { solved: 0 },
-                        medium: { solved: 0 },
-                        hard: { solved: 0 }
-                    },
-                    recommendations: ['Practice more Arrays problems', 'Try Medium difficulty'],
-                    commonErrors: []
+                    trend: weeklyData,
+                    topicStats: topicData,
+                    difficultyBreakdown: diffData,
+                    recommendations: generateRecommendations(topicData, diffData),
+                    commonErrors: [],
+                    problems: problems
                 };
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -344,9 +345,91 @@
                     topicStats: [],
                     difficultyBreakdown: { easy: { solved: 0 }, medium: { solved: 0 }, hard: { solved: 0 } },
                     recommendations: [],
-                    commonErrors: []
+                    commonErrors: [],
+                    problems: []
                 };
             }
+        }
+
+        function processWeeklyData(problems) {
+            const weeks = {};
+            problems.forEach(p => {
+                const date = new Date(p.solved_at);
+                const week = `Week ${Math.ceil(date.getDate() / 7)}`;
+                weeks[week] = (weeks[week] || 0) + 1;
+            });
+            return Object.entries(weeks).map(([date, solved]) => ({ date, solved }));
+        }
+
+        function processTopicData(problems) {
+            const topics = {};
+            problems.forEach(p => {
+                const topic = p.topic || 'General';
+                topics[topic] = (topics[topic] || 0) + 1;
+            });
+            return Object.entries(topics).map(([topic, solved]) => ({ topic, solved }));
+        }
+
+        function processDifficultyData(problems) {
+            const diff = { easy: 0, medium: 0, hard: 0 };
+            problems.forEach(p => {
+                const d = (p.difficulty || 'easy').toString().toLowerCase();
+                if (diff[d] !== undefined) diff[d]++;
+            });
+            return {
+                easy: { solved: diff.easy },
+                medium: { solved: diff.medium },
+                hard: { solved: diff.hard }
+            };
+        }
+
+        function calculateAvgTime(problems) {
+            if (!problems.length) return 0;
+            // Calculate average time from solved_at timestamps (time between submissions)
+            let totalTime = 0;
+            for (let i = 0; i < problems.length - 1; i++) {
+                const time1 = new Date(problems[i].solved_at).getTime();
+                const time2 = new Date(problems[i + 1].solved_at).getTime();
+                totalTime += Math.abs(time1 - time2) / 1000; // Convert to seconds
+            }
+            return problems.length > 1 ? Math.floor(totalTime / (problems.length - 1)) : 300; // Default 5 min
+        }
+
+        function calculateStreak(problems) {
+            if (!problems.length) return 0;
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const dates = problems.map(p => {
+                const d = new Date(p.solved_at);
+                d.setHours(0, 0, 0, 0);
+                return d.getTime();
+            });
+            
+            const uniqueDates = [...new Set(dates)].sort((a, b) => b - a);
+            
+            let streak = 0;
+            let currentDate = today.getTime();
+            
+            for (const date of uniqueDates) {
+                const daysDiff = Math.floor((currentDate - date) / (1000 * 60 * 60 * 24));
+                if (daysDiff === streak) {
+                    streak++;
+                } else if (daysDiff > streak) {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        function generateRecommendations(topicData, diffData) {
+            const recs = [];
+            if (topicData.length === 0) recs.push('Start solving problems to get recommendations');
+            if (diffData.hard.solved === 0) recs.push('Try solving Hard difficulty problems');
+            if (diffData.medium.solved < 5) recs.push('Practice more Medium difficulty problems');
+            return recs.length ? recs : ['Keep up the great work!'];
         }
 
         function loadSummaryData() {
@@ -435,23 +518,38 @@
 
         function generateHeatmap() {
             const heatmap = document.getElementById('heatmap');
-            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const problems = dashboardData.problems || [];
             
-            days.forEach(day => {
-                const dayLabel = document.createElement('div');
-                dayLabel.textContent = day;
-                dayLabel.className = 'text-xs text-glow-purple w-20';
-                heatmap.appendChild(dayLabel);
-                
-                for (let i = 0; i < 12; i++) {
+            const activityMap = {};
+            const today = new Date();
+            
+            problems.forEach(p => {
+                const date = new Date(p.solved_at);
+                const dateStr = date.toISOString().split('T')[0];
+                activityMap[dateStr] = (activityMap[dateStr] || 0) + 1;
+            });
+            
+            heatmap.innerHTML = '<div style="display: grid; grid-template-columns: repeat(12, 30px); gap: 3px;">';
+            const container = heatmap.firstChild;
+            
+            // 7 rows (days) x 12 columns (weeks)
+            for (let day = 0; day < 7; day++) {
+                for (let week = 0; week < 12; week++) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - ((11 - week) * 7 + day));
+                    const dateStr = date.toISOString().split('T')[0];
+                    const count = activityMap[dateStr] || 0;
+                    
                     const cell = document.createElement('div');
                     cell.className = 'heatmap-cell';
-                    const intensity = Math.random();
-                    cell.style.backgroundColor = `rgba(255, 105, 180, ${intensity})`;
-                    cell.title = `${day}: ${Math.floor(intensity * 10)} problems`;
-                    heatmap.appendChild(cell);
+                    const intensity = Math.min(count / 5, 1);
+                    cell.style.backgroundColor = count > 0 ? `rgba(255, 105, 180, ${0.2 + intensity * 0.8})` : 'rgba(75, 46, 114, 0.3)';
+                    cell.title = `${dateStr}: ${count} problem${count !== 1 ? 's' : ''}`;
+                    container.appendChild(cell);
                 }
-            });
+            }
+            
+            heatmap.innerHTML += '</div>';
         }
 
         function loadRecommendations() {
@@ -533,7 +631,7 @@
         }
 
         async function bookmarkRecommendation() {
-            alert('Bookmark feature coming soon!');
+            window.location.href = 'practice-new.html';
         }
 
         function showError(message) {

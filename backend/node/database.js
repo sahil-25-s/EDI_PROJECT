@@ -33,6 +33,18 @@ function initDatabase() {
                 }
             });
 
+            // Problems table
+            db.run(`CREATE TABLE IF NOT EXISTS problems (
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                description TEXT NOT NULL,
+                difficulty TEXT NOT NULL,
+                input_format TEXT,
+                output_format TEXT,
+                example TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )`);
+
             // Solved problems table
             db.run(`CREATE TABLE IF NOT EXISTS solved_problems (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,9 +52,29 @@ function initDatabase() {
                 problem_id TEXT,
                 solution TEXT,
                 language TEXT,
+                approved INTEGER DEFAULT 0,
+                admin_xp INTEGER DEFAULT 0,
                 solved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users (id)
+                FOREIGN KEY (user_id) REFERENCES users (id),
+                FOREIGN KEY (problem_id) REFERENCES problems (id)
             )`);
+
+            // Add approval columns if they don't exist
+            db.run(`ALTER TABLE solved_problems ADD COLUMN approved INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column')) {
+                    console.error('Error adding approved column:', err);
+                }
+            });
+            db.run(`ALTER TABLE solved_problems ADD COLUMN admin_xp INTEGER DEFAULT 0`, (err) => {
+                if (err && !err.message.includes('duplicate column')) {
+                    console.error('Error adding admin_xp column:', err);
+                }
+            });
+            db.run(`ALTER TABLE solved_problems ADD COLUMN difficulty TEXT DEFAULT 'easy'`, (err) => {
+                if (err && !err.message.includes('duplicate column')) {
+                    console.error('Error adding difficulty column:', err);
+                }
+            });
 
             // Completed lessons table
             db.run(`CREATE TABLE IF NOT EXISTS completed_lessons (
@@ -51,6 +83,16 @@ function initDatabase() {
                 lesson_id TEXT,
                 completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users (id)
+            )`);
+
+            // MCQ Questions table
+            db.run(`CREATE TABLE IF NOT EXISTS mcq_questions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                question TEXT NOT NULL,
+                options TEXT NOT NULL,
+                correct_answer INTEGER NOT NULL,
+                difficulty TEXT DEFAULT 'medium',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`);
 
             // Battles table
@@ -96,7 +138,7 @@ function initDatabase() {
             });
 
             // Create admin user
-            db.get('SELECT id FROM users WHERE email = ?', [adminEmail], async (err, row) => {
+            db.get('SELECT id, role FROM users WHERE email = ?', [adminEmail], async (err, row) => {
                 if (!row) {
                     try {
                         const adminPasswordHash = await bcrypt.hash('admin123', 10);
@@ -111,6 +153,14 @@ function initDatabase() {
                     } catch (error) {
                         console.error('Error hashing admin password:', error);
                     }
+                } else if (row.role !== 'admin') {
+                    db.run('UPDATE users SET role = ? WHERE email = ?', ['admin', adminEmail], (err) => {
+                        if (err) {
+                            console.error('Error updating admin role:', err);
+                        } else {
+                            console.log('✅ Admin role updated for: admin@codecade.com');
+                        }
+                    });
                 }
                 resolve();
             });
