@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODECADE - Master DSA</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 2px solid #00ff41;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            color: #00ff41;
+            text-decoration: none;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #00ff41;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            text-shadow: 0 0 10px #00ff41;
+            transform: scale(1.1);
+        }
+
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 2rem;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.1) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px #00ff41;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff41; }
+            to { text-shadow: 0 0 30px #00ff41, 0 0 40px #00ff41; }
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #cccccc;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            color: #000;
+            padding: 1rem 2rem;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .features {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #00ff41;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #00ff41;
+        }
+
+        .feature-card p {
+            color: #cccccc;
+            font-size: 1.2rem;
+        }
+
+        .stats {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            color: #00ff41;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            display: block;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">CODECADE</a>
+            <div class="nav-links">
+                <a href="/home.html">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/roadmap.html">Roadmap</a>
+                <a href="/help.html">Help</a>
+                <a href="/dashboard.html">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>MASTER DSA</h1>
+        <p>Level up your coding skills with interactive challenges and AI-powered learning</p>
+        <a href="/dashboard.html" class="cta-button">START CODING</a>
+    </section>
+
+    <section class="features">
+        <h2>GAME FEATURES</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>PRACTICE MODE</h3>
+                <p>Solve 500+ DSA problems with instant feedback and detailed explanations</p>
+            </div>
+            <div class="feature-card">
+                <h3>BATTLE MODE</h3>
+                <p>Compete in real-time coding battles against players worldwide</p>
+            </div>
+            <div class="feature-card">
+                <h3>LEARN MODE</h3>
+                <p>Interactive theory modules with visual explanations and examples</p>
+            </div>
+            <div class="feature-card">
+                <h3>PROGRESS TRACKING</h3>
+                <p>Advanced analytics to monitor your learning journey and improvements</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Problems</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Topics</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">10K+</span>
+                <span class="stat-label">Users</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Support</span>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -10,6 +10,7 @@ const userRoutes = require('./routes/user');
 const leaderboardRoutes = require('./routes/leaderboard');
 const lessonRoutes = require('./routes/lessons');
 const battleRoutes = require('./routes/battles');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/battles', battleRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -63,8 +65,32 @@ app.get('/problem.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/pages/problem.html'));
 });
 
+app.get('/test.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/test.html'));
+});
+
 app.get('/battle.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/pages/battle.html'));
+});
+
+app.get('/home.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/home.html'));
+});
+
+app.get('/about.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/about.html'));
+});
+
+app.get('/roadmap.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/roadmap.html'));
+});
+
+app.get('/help.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/help.html'));
+});
+
+app.get('/admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/admin.html'));
 });
 
 app.get('/pages/:page', (req, res) => {

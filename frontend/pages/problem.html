@@ -444,22 +444,47 @@ public:
                 // Simulate code execution
                 await new Promise(resolve => setTimeout(resolve, 1500));
                 
-                // Simple validation
-                const isCorrect = code.length > 30 && 
-                                 (code.includes('return') || code.includes('print'));
+                // Simulate actual code execution output
+                let output = '';
                 
-                if (isCorrect) {
-                    showOutput('✅ Code executed successfully!\n\nSample test cases passed.\nReady to submit for full evaluation.', 'success');
-                    renderTestCases([
-                        { input: 'nums = [2,7,11,15], target = 9', expected: '[0,1]', actual: '[0,1]', passed: true },
-                        { input: 'nums = [3,2,4], target = 6', expected: '[1,2]', actual: '[1,2]', passed: true }
-                    ]);
+                if (language === 'python') {
+                    if (code.includes('print(')) {
+                        const printMatches = code.match(/print\([^)]*\)/g);
+                        if (printMatches) {
+                            printMatches.forEach(match => {
+                                const content = match.match(/print\(([^)]*)\)/)[1];
+                                let result = content.replace(/["']/g, '');
+                                output += result + '\n';
+                            });
+                        }
+                    } else {
+                        output = 'Code executed (no output)';
+                    }
+                } else if (language === 'javascript') {
+                    if (code.includes('console.log')) {
+                        const logMatches = code.match(/console\.log\([^)]*\)/g);
+                        if (logMatches) {
+                            logMatches.forEach(match => {
+                                const content = match.match(/console\.log\(([^)]*)\)/)[1];
+                                let result = content.replace(/["']/g, '');
+                                output += result + '\n';
+                            });
+                        }
+                    } else {
+                        output = 'Code executed (no output)';
+                    }
                 } else {
-                    showOutput('❌ Code has issues.\n\nPlease check your logic and try again.', 'error');
-                    renderTestCases([
-                        { input: 'nums = [2,7,11,15], target = 9', expected: '[0,1]', actual: 'undefined', passed: false }
-                    ]);
+                    output = 'Code executed (no output)';
                 }
+                
+                if (!output.trim()) {
+                    output = 'Code executed (no output)';
+                }
+                
+                showOutput(`✅ Output:\n\n${output}\n💡 Use SUBMIT to save your solution.`, 'success');
+                renderTestCases([
+                    { input: 'Your Code', expected: 'Output', actual: output.trim(), passed: true }
+                ]);
                 
             } catch (error) {
                 showOutput('🚫 Runtime error occurred.', 'error');

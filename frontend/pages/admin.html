@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CODECADE</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #00ff41;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, #ff1493, #9932cc);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-top: 0.5rem;
+        }
+
+        .section {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00ff41;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #00ff41;
+            color: #000;
+        }
+
+        .tab:hover {
+            background: rgba(0, 255, 65, 0.2);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th, .table td {
+            border: 1px solid #00ff41;
+            padding: 1rem;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .table th {
+            background: rgba(0, 255, 65, 0.2);
+            color: #00ff41;
+        }
+
+        .table td {
+            color: #cccccc;
+        }
+
+        .view-btn {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        .delete-btn {
+            background: linear-gradient(45deg, #ff1493, #dc143c);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #ff1493;
+        }
+
+        .role-select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 0.3rem;
+            border-radius: 3px;
+            font-family: 'VT323', monospace;
+        }
+
+        .code-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 5% auto;
+            width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 2rem;
+            color: #ff1493;
+            cursor: pointer;
+        }
+
+        .code-block {
+            background: #000;
+            border: 1px solid #00ff41;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .logout-btn {
+            background: rgba(255, 20, 147, 0.1);
+            border: 2px solid #ff1493;
+            color: #ff1493;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff1493;
+            color: white;
+            box-shadow: 0 0 15px #ff1493;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">CODECADE ADMIN</div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="admin-badge">ADMIN PANEL</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">ADMIN DASHBOARD</h1>
+
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-users">0</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-submissions">0</div>
+                <div class="stat-label">Code Submissions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-battles">0</div>
+                <div class="stat-label">Total Battles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="active-users">0</div>
+                <div class="stat-label">Active Users (7d)</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('users')">Users</div>
+                <div class="tab" onclick="showTab('codes')">All Codes</div>
+                <div class="tab" onclick="showTab('system')">System</div>
+            </div>
+
+            <div id="users-tab" class="tab-content active">
+                <h2>User Management</h2>
+                <table class="table" id="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Level</th>
+                            <th>XP</th>
+                            <th>Rating</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="codes-tab" class="tab-content">
+                <h2>All Code Submissions</h2>
+                <table class="table" id="codes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Problem</th>
+                            <th>Language</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div id="system-tab" class="tab-content">
+                <h2>System Management</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <h3 style="color: #00ff41; margin-bottom: 1rem;">System Info</h3>
+                        <div id="system-info">Loading...</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3 style="color: #ff1493; margin-bottom: 1rem;">Danger Zone</h3>
+                        <button class="view-btn" style="background: linear-gradient(45deg, #ff1493, #dc143c); margin-bottom: 1rem;" onclick="clearAllData()">
+                            Clear All User Data
+                        </button>
+                        <p style="color: #cccccc; font-size: 0.9rem;">This will delete all users, submissions, and battles (except admin accounts)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Modal -->
+    <div id="code-modal" class="code-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Code Submission</h2>
+            <div id="modal-details"></div>
+            <div class="code-block" id="modal-code"></div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        // Check admin access
+        if (!token || user.role !== 'admin') {
+            alert('Admin access required');
+            window.location.href = '/';
+        }
+
+        // Load dashboard data
+        async function loadStats() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const stats = await response.json();
+                
+                document.getElementById('total-users').textContent = stats.totalUsers || 0;
+                document.getElementById('total-submissions').textContent = stats.totalSubmissions || 0;
+                document.getElementById('total-battles').textContent = stats.totalBattles || 0;
+                document.getElementById('active-users').textContent = stats.activeUsers || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const users = await response.json();
+                
+                const tbody = document.querySelector('#users-table tbody');
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <select class="role-select" onchange="updateUserRole(${user.id}, this.value)" ${user.role === 'admin' ? 'disabled' : ''}>
+                                <option value="user" ${user.role === 'user' ? 'selected' : ''}>User</option>
+                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                        </td>
+                        <td>${user.level}</td>
+                        <td>${user.xp}</td>
+                        <td>${user.battle_rating}</td>
+                        <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="view-btn" onclick="viewUserCodes(${user.id}, '${user.username}')">
+                                View Codes
+                            </button>
+                            ${user.role !== 'admin' ? `<button class="delete-btn" onclick="deleteUser(${user.id}, '${user.username}')">Delete</button>` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        async function loadAllCodes() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/codes', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const codes = await response.json();
+                
+                const tbody = document.querySelector('#codes-table tbody');
+                tbody.innerHTML = codes.map(code => `
+                    <tr>
+                        <td>${code.id}</td>
+                        <td>${code.username}</td>
+                        <td>${code.problem_id}</td>
+                        <td>${code.language}</td>
+                        <td>${new Date(code.solved_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="view-btn" onclick="viewCode('${code.problem_id}', '${code.username}', '${code.language}', \`${code.solution.replace(/`/g, '\\`')}\`, ${code.user_id}, ${code.id})">
+                                View Code
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading codes:', error);
+            }
+        }
+
+        async function viewUserCodes(userId, username) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/codes`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const codes = await response.json();
+                
+                document.getElementById('modal-title').textContent = `${username}'s Code Submissions`;
+                document.getElementById('modal-details').innerHTML = `
+                    <p><strong>User:</strong> ${username}</p>
+                    <p><strong>Total Submissions:</strong> ${codes.length}</p>
+                `;
+                
+                const codesList = codes.map(code => `
+                    <div style="margin: 1rem 0; padding: 1rem; border: 1px solid #00ff41; border-radius: 5px;">
+                        <p><strong>Problem:</strong> ${code.problem_id}</p>
+                        <p><strong>Language:</strong> ${code.language}</p>
+                        <p><strong>Submitted:</strong> ${new Date(code.solved_at).toLocaleString()}</p>
+                        <div class="code-block">${code.solution}</div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('modal-code').innerHTML = codesList;
+                document.getElementById('code-modal').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading user codes:', error);
+            }
+        }
+
+        function viewCode(problemId, username, language, solution, userId, submissionId) {
+            document.getElementById('modal-title').textContent = `Code Submission - ${problemId}`;
+            document.getElementById('modal-details').innerHTML = `
+                <p><strong>User:</strong> ${username}</p>
+                <p><strong>Problem:</strong> ${problemId}</p>
+                <p><strong>Language:</strong> ${language}</p>
+                <div style="margin-top: 1rem;">
+                    <label style="color: #00ff41;">Award Points:</label>
+                    <input type="number" id="points-input" min="0" max="100" value="10" style="margin: 0 0.5rem; padding: 0.3rem; background: rgba(0,0,0,0.5); border: 1px solid #00ff41; color: #00ff41; border-radius: 3px; width: 80px;">
+                    <button class="view-btn" onclick="awardPoints(${userId}, ${submissionId})" style="margin-left: 0.5rem;">Award Points</button>
+                </div>
+            `;
+            document.getElementById('modal-code').textContent = solution;
+            document.getElementById('code-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('code-modal').style.display = 'none';
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load data for the tab
+            if (tabName === 'users') {
+                loadUsers();
+            } else if (tabName === 'codes') {
+                loadAllCodes();
+            } else if (tabName === 'system') {
+                loadSystemInfo();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('code-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        async function updateUserRole(userId, newRole) {
+            if (!confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
+                location.reload(); // Reset the select
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/role`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ role: newRole })
+                });
+                
+                if (response.ok) {
+                    alert('User role updated successfully');
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                    location.reload();
+                }
+            } catch (error) {
+                console.error('Error updating user role:', error);
+                alert('Error updating user role');
+                location.reload();
+            }
+        }
+
+        async function deleteUser(userId, username) {
+            if (!confirm(`Are you sure you want to delete user "${username}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    alert('User deleted successfully');
+                    loadUsers();
+                    loadStats();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Error deleting user');
+            }
+        }
+
+        async function loadSystemInfo() {
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/system', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const systemInfo = await response.json();
+                
+                document.getElementById('system-info').innerHTML = `
+                    <p><strong>Node.js Version:</strong> ${systemInfo.nodeVersion}</p>
+                    <p><strong>Platform:</strong> ${systemInfo.platform}</p>
+                    <p><strong>Uptime:</strong> ${Math.floor(systemInfo.uptime / 3600)}h ${Math.floor((systemInfo.uptime % 3600) / 60)}m</p>
+                    <p><strong>Memory Usage:</strong> ${Math.round(systemInfo.memoryUsage.heapUsed / 1024 / 1024)}MB</p>
+                    <p><strong>Last Updated:</strong> ${new Date(systemInfo.timestamp).toLocaleString()}</p>
+                `;
+            } catch (error) {
+                console.error('Error loading system info:', error);
+                document.getElementById('system-info').innerHTML = 'Error loading system info';
+            }
+        }
+
+        async function clearAllData() {
+            const confirmation = prompt('This will delete ALL user data except admin accounts. Type "DELETE ALL" to confirm:');
+            if (confirmation !== 'DELETE ALL') {
+                alert('Operation cancelled');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/clear-data', {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    alert('All user data cleared successfully');
+                    loadStats();
+                    loadUsers();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error clearing data:', error);
+                alert('Error clearing data');
+            }
+        }
+
+        async function awardPoints(userId, submissionId) {
+            const points = parseInt(document.getElementById('points-input').value);
+            if (!points || points < 0) {
+                alert('Please enter valid points (0-100)');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/admin/award-points', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, submissionId, points })
+                });
+                
+                if (response.ok) {
+                    alert(`Successfully awarded ${points} points!`);
+                    closeModal();
+                    loadStats();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error awarding points:', error);
+                alert('Error awarding points');
+            }
+        }
+
+        // Initialize dashboard
+        loadStats();
+        loadUsers();
+    </script>
+</body>
+</html>

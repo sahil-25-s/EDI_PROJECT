@@ -6,6 +6,7 @@
     <title>Coding Test - Codecade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'VT323', monospace;
@@ -13,529 +14,351 @@
             color: #e0e0e0;
             font-size: 1.25rem;
         }
-        :root {
-            --neon-pink: #ff1493;
-            --neon-purple: #9932cc;
-            --bg-dark: #2e1a47;
-            --bg-light: #4b2e72;
+
+        .retro-panel {
+            background: linear-gradient(135deg, rgba(75, 46, 114, 0.9), rgba(46, 26, 71, 0.9));
+            border: 4px solid #9932cc;
+            box-shadow: 0 0 15px #9932cc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
         }
-        .panel {
-            background: var(--bg-light);
-            border: 3px solid var(--neon-purple);
-            box-shadow: 0 0 15px var(--neon-purple);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-        .btn {
+
+        .retro-btn {
             font-family: 'VT323', monospace;
+            font-size: 1.1rem;
             padding: 0.75rem 1.5rem;
-            border: 3px solid;
-            border-radius: 6px;
+            border: 3px solid #da70d6;
+            border-radius: 8px;
             cursor: pointer;
             text-transform: uppercase;
-            transition: all 0.2s;
-            font-size: 1rem;
-        }
-        .btn-primary {
-            border-color: var(--neon-pink);
-            color: var(--neon-pink);
-            background: transparent;
-        }
-        .btn-primary:hover {
-            background: var(--neon-pink);
-            color: var(--bg-dark);
-        }
-        .btn-secondary {
-            border-color: var(--neon-purple);
-            color: var(--neon-purple);
-            background: transparent;
-        }
-        .btn-secondary:hover {
-            background: var(--neon-purple);
-            color: var(--bg-dark);
-        }
-        .code-editor {
-            font-family: 'Courier New', monospace;
-            background: #0a0a23;
+            transition: all 0.3s ease;
             color: #da70d6;
-            border: 2px solid var(--neon-purple);
-            border-radius: 8px;
-            padding: 1rem;
-            width: 100%;
-            min-height: 300px;
-            resize: vertical;
-            outline: none;
-        }
-        .question-nav {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .question-btn {
-            width: 50px;
-            height: 50px;
-            border: 2px solid #666;
             background: transparent;
-            color: #ccc;
+        }
+
+        .retro-btn:hover {
+            background: #da70d6;
+            color: #1a0a2e;
+            box-shadow: 0 0 20px #da70d6;
+        }
+
+        .text-glow-pink { color: #ff1493; text-shadow: 0 0 10px #ff1493; }
+        .text-glow-purple { color: #9932cc; text-shadow: 0 0 10px #9932cc; }
+        .text-glow-cyan { color: #67e8f9; text-shadow: 0 0 10px #06b6d4; }
+
+        .question-card {
+            background: rgba(75, 46, 114, 0.6);
+            border: 2px solid #da70d6;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-        .question-btn.active {
-            border-color: var(--neon-pink);
-            color: var(--neon-pink);
-            background: rgba(255, 20, 147, 0.2);
-        }
-        .question-btn.answered {
-            border-color: #00ff00;
-            color: #00ff00;
-        }
-        .timer {
-            font-size: 2rem;
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-        }
-        .result-card {
-            background: rgba(75, 46, 114, 0.5);
-            border: 2px solid;
-            border-radius: 8px;
-            padding: 1rem;
+            padding: 1.5rem;
             margin-bottom: 1rem;
         }
-        .result-correct {
+
+        .option {
+            background: rgba(46, 26, 71, 0.6);
+            border: 2px solid #444;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #da70d6;
+            background: rgba(218, 112, 214, 0.1);
+        }
+
+        .option.selected {
             border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
         }
-        .result-incorrect {
-            border-color: #ff0000;
+
+        .timer {
+            font-size: 2rem;
+            text-align: center;
+            color: #ff1493;
+            text-shadow: 0 0 10px #ff1493;
         }
-        .hidden {
-            display: none;
+
+        .progress-bar {
+            background: #444;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff1493, #da70d6);
+            height: 100%;
+            transition: width 0.3s ease;
         }
     </style>
 </head>
-<body class="min-h-screen p-4">
+<body class="min-h-screen">
     <!-- Header -->
-    <header class="panel">
+    <header class="retro-panel">
         <div class="flex justify-between items-center">
-            <h1 class="text-3xl" style="color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink);">
-                🎯 CODING & DSA TEST
-            </h1>
-            <div class="timer" id="timer">00:00</div>
+            <h1 class="text-3xl text-glow-pink">📝 CODING TEST</h1>
+            <div class="flex gap-4 items-center">
+                <div class="timer" id="timer">15:00</div>
+                <a href="index.html" class="retro-btn text-sm">← HOME</a>
+            </div>
         </div>
     </header>
 
-    <!-- Test View -->
-    <div id="testView">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <!-- Sidebar -->
-            <div class="lg:col-span-1">
-                <div class="panel">
-                    <h3 class="text-xl mb-4" style="color: var(--neon-purple);">Questions</h3>
-                    <div class="question-nav" id="questionNav"></div>
-                    <div class="mt-6">
-                        <button class="btn btn-primary w-full" onclick="submitTest()">Submit Test</button>
-                    </div>
-                    <div class="mt-4 text-sm text-gray-400">
-                        <p>✅ Answered: <span id="answeredCount">0</span>/5</p>
-                        <p class="mt-2">💡 Unlimited time</p>
-                    </div>
-                </div>
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Test Info -->
+        <div id="testInfo" class="retro-panel text-center">
+            <h2 class="text-2xl text-glow-cyan mb-4">5-Question Coding Assessment</h2>
+            <p class="mb-4">Test your DSA knowledge with 5 carefully selected questions.</p>
+            <p class="mb-6 text-yellow-400">⏱️ Time Limit: 15 minutes</p>
+            <button id="startBtn" class="retro-btn text-xl">START TEST</button>
+        </div>
+
+        <!-- Progress -->
+        <div id="progressSection" class="hidden mb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span>Question <span id="currentQ">1</span> of 5</span>
+                <span id="timeLeft">15:00</span>
             </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+            </div>
+        </div>
 
-            <!-- Main Content -->
-            <div class="lg:col-span-3">
-                <div class="panel">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl" style="color: var(--neon-purple);">
-                            Question <span id="currentQuestionNum">1</span>
-                        </h2>
-                        <div class="flex gap-2">
-                            <button class="btn btn-secondary" onclick="previousQuestion()">← Prev</button>
-                            <button class="btn btn-secondary" onclick="nextQuestion()">Next →</button>
-                        </div>
-                    </div>
-
-                    <!-- Question Details -->
-                    <div id="questionContent">
-                        <h3 class="text-xl mb-3" id="questionTitle"></h3>
-                        <div class="mb-4 text-gray-300" id="questionDescription"></div>
-                        
-                        <div class="mb-4">
-                            <h4 class="text-lg mb-2" style="color: var(--neon-pink);">Example:</h4>
-                            <div class="bg-black p-3 rounded border border-gray-700">
-                                <pre id="questionExample" class="text-sm"></pre>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <h4 class="text-lg mb-2" style="color: var(--neon-pink);">Constraints:</h4>
-                            <div id="questionConstraints" class="text-sm text-gray-400"></div>
-                        </div>
-                    </div>
-
-                    <!-- Code Editor -->
-                    <div class="mt-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="text-lg" style="color: var(--neon-purple);">Your Solution:</h4>
-                            <select id="languageSelect" class="bg-gray-800 border-2 border-purple-600 text-purple-400 px-3 py-1 rounded">
-                                <option value="cpp">C++</option>
-                                <option value="java">Java</option>
-                                <option value="python">Python</option>
-                                <option value="javascript">JavaScript</option>
-                            </select>
-                        </div>
-                        <textarea id="codeEditor" class="code-editor" placeholder="// Write your code here..."></textarea>
-                        <div class="mt-3 flex gap-2">
-                            <button class="btn btn-secondary" onclick="saveAnswer()">💾 Save Answer</button>
-                            <button class="btn btn-primary" onclick="testCode()">▶️ Test Code</button>
-                        </div>
-                        <div id="testOutput" class="mt-3 hidden">
-                            <div class="bg-black p-3 rounded border border-gray-700">
-                                <pre id="outputText" class="text-sm text-green-400"></pre>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Question -->
+        <div id="questionSection" class="hidden">
+            <div class="question-card">
+                <h3 class="text-xl text-glow-purple mb-4" id="questionTitle">Question 1</h3>
+                <p class="mb-6" id="questionText">Loading question...</p>
+                <div id="optionsContainer">
+                    <!-- Options will be loaded here -->
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="prevBtn" class="retro-btn" disabled>PREVIOUS</button>
+                    <button id="nextBtn" class="retro-btn">NEXT</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Results View -->
-    <div id="resultsView" class="hidden">
-        <div class="panel max-w-4xl mx-auto">
-            <h2 class="text-3xl text-center mb-6" style="color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink);">
-                🏆 TEST RESULTS
-            </h2>
-
-            <div class="grid grid-cols-3 gap-4 mb-6 text-center">
-                <div class="panel">
-                    <div class="text-4xl mb-2" style="color: var(--neon-pink);" id="scoreDisplay">0/5</div>
-                    <div class="text-sm text-gray-400">Score</div>
+        <!-- Results -->
+        <div id="resultsSection" class="hidden">
+            <div class="retro-panel text-center">
+                <h2 class="text-2xl text-glow-cyan mb-4">🎯 TEST COMPLETED!</h2>
+                <div class="text-6xl mb-4" id="scoreDisplay">0/5</div>
+                <div class="text-xl mb-6">
+                    <span id="scoreText">Score: 0%</span>
                 </div>
-                <div class="panel">
-                    <div class="text-4xl mb-2" style="color: var(--neon-purple);" id="percentageDisplay">0%</div>
-                    <div class="text-sm text-gray-400">Percentage</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-2xl text-green-400" id="correctCount">0</div>
+                        <div class="text-sm">Correct</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-2xl text-red-400" id="wrongCount">0</div>
+                        <div class="text-sm">Wrong</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded">
+                        <div class="text-2xl text-yellow-400" id="timeUsed">0:00</div>
+                        <div class="text-sm">Time Used</div>
+                    </div>
                 </div>
-                <div class="panel">
-                    <div class="text-4xl mb-2" style="color: #00ff00;" id="timeDisplay">00:00</div>
-                    <div class="text-sm text-gray-400">Time Taken</div>
+                <div class="flex gap-4 justify-center">
+                    <button id="retakeBtn" class="retro-btn">RETAKE TEST</button>
+                    <a href="practice-new.html" class="retro-btn">PRACTICE MORE</a>
                 </div>
-            </div>
-
-            <h3 class="text-xl mb-4" style="color: var(--neon-purple);">Detailed Results:</h3>
-            <div id="detailedResults"></div>
-
-            <div class="flex gap-4 justify-center mt-6">
-                <button class="btn btn-primary" onclick="retakeTest()">🔄 Retake Test</button>
-                <button class="btn btn-secondary" onclick="window.location.href='practice-new.html'">📚 Back to Practice</button>
             </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8080';
-        const AUTH_TOKEN = localStorage.getItem('codecade_token') || '';
-        
-        if (!AUTH_TOKEN) {
-            window.location.href = 'index.html';
+        const questions = [
+            {
+                question: "What is the time complexity of binary search?",
+                options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+                correct: 1
+            },
+            {
+                question: "Which data structure uses LIFO (Last In, First Out) principle?",
+                options: ["Queue", "Stack", "Array", "Linked List"],
+                correct: 1
+            },
+            {
+                question: "What is the worst-case time complexity of quicksort?",
+                options: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"],
+                correct: 1
+            },
+            {
+                question: "In a binary tree, what is the maximum number of nodes at level 3?",
+                options: ["4", "6", "8", "16"],
+                correct: 2
+            },
+            {
+                question: "Which algorithm is used to find the shortest path in a weighted graph?",
+                options: ["BFS", "DFS", "Dijkstra's", "Binary Search"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+        let timeLeft = 15 * 60; // 15 minutes in seconds
+        let timerInterval = null;
+        let testStartTime = null;
+
+        function startTest() {
+            document.getElementById('testInfo').classList.add('hidden');
+            document.getElementById('progressSection').classList.remove('hidden');
+            document.getElementById('questionSection').classList.remove('hidden');
+            
+            testStartTime = Date.now();
+            startTimer();
+            loadQuestion();
         }
 
-        let testQuestions = [];
-        let currentQuestionIndex = 0;
-        let userAnswers = {};
-        let startTime = Date.now();
-        let timerInterval;
-
-        // Start timer
         function startTimer() {
             timerInterval = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                const minutes = Math.floor(elapsed / 60);
-                const seconds = elapsed % 60;
-                document.getElementById('timer').textContent = 
-                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    finishTest();
+                }
             }, 1000);
         }
 
-        // Load test questions
-        async function loadTestQuestions() {
-            try {
-                const response = await fetch(`${API_BASE}/api/test/questions`, {
-                    headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
-                });
-                const data = await response.json();
-                testQuestions = data.questions;
-            } catch (error) {
-                console.error('Failed to load questions:', error);
-                // Fallback to mock questions
-                testQuestions = [
-                    {
-                        id: 'two-sum',
-                        title: 'Two Sum',
-                        description: 'Given an array of integers nums and an integer target, return indices of the two numbers that add up to target.',
-                        example: 'Input: nums = [2,7,11,15], target = 9\nOutput: [0,1]\nExplanation: nums[0] + nums[1] = 9',
-                        constraints: '• 2 <= nums.length <= 10^4\n• -10^9 <= nums[i] <= 10^9\n• Only one valid answer exists',
-                        testCases: [
-                            { input: '[2,7,11,15], 9', expected: '[0,1]' },
-                            { input: '[3,2,4], 6', expected: '[1,2]' }
-                        ]
-                    },
-                    {
-                        id: 'valid-parentheses',
-                        title: 'Valid Parentheses',
-                        description: 'Given a string containing just the characters \'(\', \')\', \'{\', \'}\', \'[\' and \']\', determine if the input string is valid.',
-                        example: 'Input: s = "()"\nOutput: true\n\nInput: s = "()[]{}"\nOutput: true',
-                        constraints: '• 1 <= s.length <= 10^4\n• s consists of parentheses only',
-                        testCases: [
-                            { input: '"()"', expected: 'true' },
-                            { input: '"()[]{}"', expected: 'true' }
-                        ]
-                    },
-                    {
-                        id: 'reverse-linked-list',
-                        title: 'Reverse Linked List',
-                        description: 'Given the head of a singly linked list, reverse the list and return the reversed list.',
-                        example: 'Input: head = [1,2,3,4,5]\nOutput: [5,4,3,2,1]',
-                        constraints: '• The number of nodes is in range [0, 5000]\n• -5000 <= Node.val <= 5000',
-                        testCases: [
-                            { input: '[1,2,3,4,5]', expected: '[5,4,3,2,1]' },
-                            { input: '[1,2]', expected: '[2,1]' }
-                        ]
-                    },
-                    {
-                        id: 'binary-search',
-                        title: 'Binary Search',
-                        description: 'Given a sorted array of integers nums and an integer target, write a function to search target in nums. Return the index if found, otherwise return -1.',
-                        example: 'Input: nums = [-1,0,3,5,9,12], target = 9\nOutput: 4\nExplanation: 9 exists in nums and its index is 4',
-                        constraints: '• 1 <= nums.length <= 10^4\n• -10^4 < nums[i], target < 10^4\n• All integers in nums are unique',
-                        testCases: [
-                            { input: '[-1,0,3,5,9,12], 9', expected: '4' },
-                            { input: '[-1,0,3,5,9,12], 2', expected: '-1' }
-                        ]
-                    },
-                    {
-                        id: 'climbing-stairs',
-                        title: 'Climbing Stairs',
-                        description: 'You are climbing a staircase. It takes n steps to reach the top. Each time you can climb 1 or 2 steps. How many distinct ways can you climb to the top?',
-                        example: 'Input: n = 2\nOutput: 2\nExplanation: Two ways: 1+1 or 2\n\nInput: n = 3\nOutput: 3\nExplanation: Three ways: 1+1+1, 1+2, or 2+1',
-                        constraints: '• 1 <= n <= 45',
-                        testCases: [
-                            { input: '2', expected: '2' },
-                            { input: '3', expected: '3' }
-                        ]
-                    }
-                ];
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('timer').textContent = timeStr;
+            document.getElementById('timeLeft').textContent = timeStr;
+            
+            // Change color when time is running out
+            if (timeLeft < 60) {
+                document.getElementById('timer').style.color = '#ff0000';
+            } else if (timeLeft < 300) {
+                document.getElementById('timer').style.color = '#ffff00';
             }
-            renderQuestionNav();
-            displayQuestion(0);
-            startTimer();
         }
 
-        // Render question navigation
-        function renderQuestionNav() {
-            const nav = document.getElementById('questionNav');
-            nav.innerHTML = testQuestions.map((q, i) => 
-                `<button class="question-btn ${i === 0 ? 'active' : ''}" 
-                        id="qBtn${i}" onclick="displayQuestion(${i})">${i + 1}</button>`
-            ).join('');
-        }
-
-        // Display question
-        function displayQuestion(index) {
-            currentQuestionIndex = index;
-            const q = testQuestions[index];
+        function loadQuestion() {
+            const q = questions[currentQuestion];
             
-            document.getElementById('currentQuestionNum').textContent = index + 1;
-            document.getElementById('questionTitle').textContent = q.title;
-            document.getElementById('questionDescription').textContent = q.description;
-            document.getElementById('questionExample').textContent = q.example;
-            document.getElementById('questionConstraints').innerHTML = q.constraints.split('\n').map(c => `<p>${c}</p>`).join('');
+            document.getElementById('questionTitle').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
             
-            // Update navigation
-            document.querySelectorAll('.question-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', i === index);
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                optionDiv.onclick = () => selectOption(index);
+                
+                if (answers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                optionsContainer.appendChild(optionDiv);
             });
             
-            // Load saved answer
-            if (userAnswers[q.id]) {
-                document.getElementById('codeEditor').value = userAnswers[q.id].code;
-                document.getElementById('languageSelect').value = userAnswers[q.id].language;
-            } else {
-                document.getElementById('codeEditor').value = '';
-                document.getElementById('languageSelect').value = 'cpp';
-            }
+            // Update progress
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
             
-            document.getElementById('testOutput').classList.add('hidden');
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = 
+                currentQuestion === questions.length - 1 ? 'FINISH' : 'NEXT';
         }
 
-        // Save answer
-        function saveAnswer() {
-            const q = testQuestions[currentQuestionIndex];
-            const code = document.getElementById('codeEditor').value.trim();
-            const language = document.getElementById('languageSelect').value;
+        function selectOption(index) {
+            answers[currentQuestion] = index;
             
-            if (code) {
-                userAnswers[q.id] = { code, language };
-                document.getElementById(`qBtn${currentQuestionIndex}`).classList.add('answered');
-                updateAnsweredCount();
-                alert('✅ Answer saved!');
-            } else {
-                alert('⚠️ Please write some code first!');
-            }
-        }
-
-        // Test code
-        function testCode() {
-            const code = document.getElementById('codeEditor').value.trim();
-            if (!code) {
-                alert('⚠️ Please write some code first!');
-                return;
-            }
-            
-            const output = document.getElementById('testOutput');
-            const outputText = document.getElementById('outputText');
-            output.classList.remove('hidden');
-            outputText.textContent = '🔄 Testing code...\n\n✅ Syntax check passed\n✅ Code is executable\n\n💡 Save your answer and submit when ready!';
-        }
-
-        // Update answered count
-        function updateAnsweredCount() {
-            document.getElementById('answeredCount').textContent = Object.keys(userAnswers).length;
-        }
-
-        // Navigation
-        function previousQuestion() {
-            if (currentQuestionIndex > 0) {
-                displayQuestion(currentQuestionIndex - 1);
-            }
+            // Update visual selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.option')[index].classList.add('selected');
         }
 
         function nextQuestion() {
-            if (currentQuestionIndex < testQuestions.length - 1) {
-                displayQuestion(currentQuestionIndex + 1);
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                finishTest();
             }
         }
 
-        // Submit test
-        async function submitTest() {
-            const answeredCount = Object.keys(userAnswers).length;
-            if (answeredCount < 5) {
-                if (!confirm(`You have only answered ${answeredCount}/5 questions. Submit anyway?`)) {
-                    return;
-                }
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
             }
-            
-            if (!confirm('Submit your test for evaluation?')) {
-                return;
-            }
-            
+        }
+
+        function finishTest() {
             clearInterval(timerInterval);
-            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
             
-            // Evaluate answers
-            const results = await evaluateTest();
-            displayResults(results, timeTaken);
+            document.getElementById('progressSection').classList.add('hidden');
+            document.getElementById('questionSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            calculateResults();
         }
 
-        // Evaluate test
-        async function evaluateTest() {
-            const results = [];
+        function calculateResults() {
+            let correct = 0;
             
-            for (const q of testQuestions) {
-                const answer = userAnswers[q.id];
-                let correct = false;
-                let executable = false;
-                let feedback = '';
-                
-                if (answer && answer.code.trim()) {
-                    executable = true;
-                    // Simple validation - check if code has basic structure
-                    const code = answer.code.toLowerCase();
-                    if (code.includes('return') || code.includes('print')) {
-                        correct = Math.random() > 0.3; // Simulate 70% success rate
-                    }
-                    
-                    if (correct) {
-                        feedback = '✅ Correct! Code executes properly and produces expected output.';
-                    } else {
-                        feedback = '❌ Incorrect output or logic error. Review the problem requirements.';
-                    }
-                } else {
-                    feedback = '⚠️ No answer provided.';
+            questions.forEach((q, index) => {
+                if (answers[index] === q.correct) {
+                    correct++;
                 }
-                
-                results.push({
-                    question: q.title,
-                    correct,
-                    executable,
-                    feedback
-                });
-            }
+            });
             
-            return results;
-        }
-
-        // Display results
-        function displayResults(results, timeTaken) {
-            const correctCount = results.filter(r => r.correct).length;
-            const percentage = Math.round((correctCount / 5) * 100);
+            const wrong = questions.length - correct;
+            const percentage = Math.round((correct / questions.length) * 100);
+            const timeUsed = Math.floor((Date.now() - testStartTime) / 1000);
+            const timeUsedStr = `${Math.floor(timeUsed / 60)}:${(timeUsed % 60).toString().padStart(2, '0')}`;
             
-            const minutes = Math.floor(timeTaken / 60);
-            const seconds = timeTaken % 60;
-            const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('scoreDisplay').textContent = `${correct}/${questions.length}`;
+            document.getElementById('scoreText').textContent = `Score: ${percentage}%`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('wrongCount').textContent = wrong;
+            document.getElementById('timeUsed').textContent = timeUsedStr;
             
-            document.getElementById('scoreDisplay').textContent = `${correctCount}/5`;
-            document.getElementById('percentageDisplay').textContent = `${percentage}%`;
-            document.getElementById('timeDisplay').textContent = timeStr;
-            
-            const detailedResults = document.getElementById('detailedResults');
-            detailedResults.innerHTML = results.map((r, i) => `
-                <div class="result-card ${r.correct ? 'result-correct' : 'result-incorrect'}">
-                    <div class="flex justify-between items-center mb-2">
-                        <h4 class="text-lg">Question ${i + 1}: ${r.question}</h4>
-                        <span class="text-2xl">${r.correct ? '✅' : '❌'}</span>
-                    </div>
-                    <p class="text-sm">${r.feedback}</p>
-                    ${r.executable ? '<p class="text-xs text-gray-400 mt-1">✓ Code is executable</p>' : ''}
-                </div>
-            `).join('');
-            
-            document.getElementById('testView').classList.add('hidden');
-            document.getElementById('resultsView').classList.remove('hidden');
-            
-            // Save results to backend
-            saveTestResults(correctCount, percentage, timeTaken);
-        }
-
-        // Save test results
-        async function saveTestResults(score, percentage, timeTaken) {
-            try {
-                await fetch(`${API_BASE}/api/test/submit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${AUTH_TOKEN}`
-                    },
-                    body: JSON.stringify({ score, percentage, timeTaken })
-                });
-            } catch (error) {
-                console.error('Failed to save results:', error);
+            // Change score color based on performance
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            if (percentage >= 80) {
+                scoreDisplay.style.color = '#00ff00';
+            } else if (percentage >= 60) {
+                scoreDisplay.style.color = '#ffff00';
+            } else {
+                scoreDisplay.style.color = '#ff0000';
             }
         }
 
-        // Retake test
         function retakeTest() {
-            userAnswers = {};
-            currentQuestionIndex = 0;
-            startTime = Date.now();
-            document.getElementById('resultsView').classList.add('hidden');
-            document.getElementById('testView').classList.remove('hidden');
-            loadTestQuestions();
+            currentQuestion = 0;
+            answers = [];
+            timeLeft = 15 * 60;
+            
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('testInfo').classList.remove('hidden');
+            document.getElementById('timer').style.color = '#ff1493';
+            document.getElementById('timer').textContent = '15:00';
         }
 
-        // Initialize
-        loadTestQuestions();
+        // Event listeners
+        document.getElementById('startBtn').addEventListener('click', startTest);
+        document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+        document.getElementById('prevBtn').addEventListener('click', prevQuestion);
+        document.getElementById('retakeBtn').addEventListener('click', retakeTest);
     </script>
 </body>
 </html>

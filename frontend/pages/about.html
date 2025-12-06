@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - CODECADE</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 2px solid #00ff41;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            color: #00ff41;
+            text-decoration: none;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #00ff41;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 100px auto 0;
+            padding: 2rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .section {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00ff41;
+        }
+
+        .section p {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .mission-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00ff41;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00ff41;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00ff41;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .team-member h4 {
+            font-size: 1.4rem;
+            color: #00ff41;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member .role {
+            color: #888;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">CODECADE</a>
+            <div class="nav-links">
+                <a href="/home.html">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/roadmap.html">Roadmap</a>
+                <a href="/help.html">Help</a>
+                <a href="/dashboard.html">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">ABOUT CODECADE</h1>
+
+        <div class="section">
+            <h2>OUR STORY</h2>
+            <p>CODECADE was born from the vision of making Data Structures & Algorithms learning engaging and accessible to everyone. We believe that coding should be fun, interactive, and rewarding.</p>
+            <p>Founded in 2024, our platform combines gamification with proven educational methodologies to create an immersive learning experience that keeps students motivated and engaged throughout their DSA journey.</p>
+        </div>
+
+        <div class="section">
+            <h2>OUR MISSION</h2>
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <h3>EDUCATE</h3>
+                    <p>Provide comprehensive DSA education through interactive challenges and real-world problem solving</p>
+                </div>
+                <div class="mission-card">
+                    <h3>ENGAGE</h3>
+                    <p>Create an engaging learning environment with gamification, competitions, and community features</p>
+                </div>
+                <div class="mission-card">
+                    <h3>EMPOWER</h3>
+                    <p>Empower students to excel in technical interviews and competitive programming</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>WHAT MAKES US DIFFERENT</h2>
+            <p><strong>Gamified Learning:</strong> Level up, earn XP, and compete with friends while mastering complex algorithms.</p>
+            <p><strong>Real-time Battles:</strong> Test your skills against other coders in live coding competitions.</p>
+            <p><strong>AI-Powered Insights:</strong> Get personalized study recommendations based on your performance.</p>
+            <p><strong>Comprehensive Coverage:</strong> From basic arrays to advanced graph algorithms, we cover it all.</p>
+        </div>
+
+        <div class="section">
+            <h2>OUR TEAM</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <h4>Development Team</h4>
+                    <p class="role">Full-Stack Engineers</p>
+                </div>
+                <div class="team-member">
+                    <h4>Content Team</h4>
+                    <p class="role">Algorithm Experts</p>
+                </div>
+                <div class="team-member">
+                    <h4>Design Team</h4>
+                    <p class="role">UX/UI Specialists</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>JOIN THE COMMUNITY</h2>
+            <p>Ready to level up your coding skills? Join thousands of developers who are already mastering DSA with CODECADE.</p>
+            <p>Whether you're preparing for technical interviews, competitive programming, or just want to improve your problem-solving skills, we're here to help you succeed.</p>
+        </div>
+    </div>
+</body>
+</html>

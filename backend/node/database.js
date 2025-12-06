@@ -9,12 +9,13 @@ const db = new sqlite3.Database(dbPath);
 function initDatabase() {
     return new Promise((resolve, reject) => {
         db.serialize(() => {
-            // Users table
+            // Users table with admin role
             db.run(`CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 email TEXT UNIQUE NOT NULL,
                 password_hash TEXT NOT NULL,
+                role TEXT DEFAULT 'user',
                 level INTEGER DEFAULT 1,
                 xp INTEGER DEFAULT 0,
                 streak_days INTEGER DEFAULT 0,
@@ -24,6 +25,13 @@ function initDatabase() {
                 battle_losses INTEGER DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`);
+
+            // Add role column if it doesn't exist
+            db.run(`ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'`, (err) => {
+                if (err && !err.message.includes('duplicate column')) {
+                    console.error('Error adding role column:', err);
+                }
+            });
 
             // Solved problems table
             db.run(`CREATE TABLE IF NOT EXISTS solved_problems (
@@ -59,8 +67,10 @@ function initDatabase() {
                 FOREIGN KEY (winner_id) REFERENCES users (id)
             )`);
 
-            // Create test user
+            // Create test user and admin
             const testEmail = 'test@example.com';
+            const adminEmail = 'admin@codecade.com';
+            
             db.get('SELECT id FROM users WHERE email = ?', [testEmail], async (err, row) => {
                 if (err) {
                     console.error('Database error:', err);
@@ -75,20 +85,34 @@ function initDatabase() {
                             ['TestPlayer', testEmail, passwordHash], (err) => {
                                 if (err) {
                                     console.error('Error creating test user:', err);
-                                    reject(err);
                                 } else {
                                     console.log('✅ Test user created: test@example.com / password123');
-                                    resolve();
                                 }
                             });
                     } catch (error) {
                         console.error('Error hashing password:', error);
-                        reject(error);
                     }
-                } else {
-                    console.log('ℹ️  Test user already exists');
-                    resolve();
                 }
+            });
+
+            // Create admin user
+            db.get('SELECT id FROM users WHERE email = ?', [adminEmail], async (err, row) => {
+                if (!row) {
+                    try {
+                        const adminPasswordHash = await bcrypt.hash('admin123', 10);
+                        db.run(`INSERT INTO users (username, email, password_hash, role, college) VALUES (?, ?, ?, ?, ?)`,
+                            ['Admin', adminEmail, adminPasswordHash, 'admin', 'CODECADE'], (err) => {
+                                if (err) {
+                                    console.error('Error creating admin user:', err);
+                                } else {
+                                    console.log('✅ Admin user created: admin@codecade.com / admin123');
+                                }
+                            });
+                    } catch (error) {
+                        console.error('Error hashing admin password:', error);
+                    }
+                }
+                resolve();
             });
         });
     });

@@ -11,24 +11,15 @@ A comprehensive platform for learning Data Structures & Algorithms with real-tim
 ./SETUP_LOCAL.sh
 ```
 
-**2. Start MongoDB** (choose one):
-- **Local MongoDB**: `mongod` (in a separate terminal)
-- **MongoDB Atlas**: Update `MONGODB_URI` in `backend/node/.env`
-
-**3. Initialize the database:**
-```bash
-cd database
-node init_mongodb.js
-```
-
-**4. Start the server:**
+**2. Start the server:**
 ```bash
 ./START_LOCAL.sh
 ```
 
-**5. Open in browser:**
+**3. Open in browser:**
 - Application: http://localhost:8080
 - Test Login: test@example.com / password123
+- Admin Login: admin@codecade.com / admin123
 
 ### Prerequisites
 
@@ -106,15 +97,39 @@ CODECADE/
 - **Head-on Mode**: Real-time competitive coding battles
 - **Leaderboard**: Global rankings and ratings
 - **Learn Mode**: Interactive theory modules
+- **Admin Panel**: User management and system monitoring
+
+## 👑 Admin Features
+
+- **User Management**: View, edit roles, and delete users
+- **Code Review**: View all user submissions and solutions
+- **System Stats**: Monitor platform usage and performance
+- **Data Management**: Clear user data and system maintenance
+
+### Admin Access
+
+**Default Admin Account:**
+- Email: admin@codecade.com
+- Password: admin123
+
+**Make User Admin:**
+```bash
+cd database
+node make_admin.js user@example.com
+```
+
+**Admin Panel:** http://localhost:8080/admin.html
 
 ## 🗄️ Database
 
-Currently using file-based storage:
+**SQLite Database** (default):
+- **Location**: `backend/node/database.sqlite`
+- **Admin user**: Created automatically on first run
+- **Test user**: Created automatically on first run
+
+**Legacy file-based storage**:
 - **User data**: `database/codecade_db/users.csv`
 - **Submissions**: `database/cpp_data/submissions/*.json`
-- **Study plans**: `database/cpp_data/study_plans/*.json`
-
-For production, migrate to PostgreSQL using `database/schema.sql`.
 
 ## 📖 Documentation
 

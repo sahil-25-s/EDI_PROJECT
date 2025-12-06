@@ -90,7 +90,7 @@ router.post('/login', (req, res) => {
                 }
 
                 const token = jwt.sign(
-                    { userId: user.id, email: user.email },
+                    { userId: user.id, email: user.email, role: user.role || 'user' },
                     process.env.JWT_SECRET,
                     { expiresIn: '24h' }
                 );
@@ -104,7 +104,8 @@ router.post('/login', (req, res) => {
                         email: user.email,
                         level: user.level,
                         xp: user.xp,
-                        college: user.college
+                        college: user.college,
+                        role: user.role || 'user'
                     }
                 });
             } catch (error) {

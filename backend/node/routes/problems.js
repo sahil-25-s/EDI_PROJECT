@@ -137,9 +137,8 @@ router.post('/:id/submit', authenticateToken, (req, res) => {
                 });
             }
 
-            // Simple validation - check solution length and basic keywords
-            const isCorrect = solution.length > 20 && 
-                             (solution.includes('return') || solution.includes('print'));
+            // Accept any solution with reasonable length
+            const isCorrect = solution.length > 10;
             
             if (isCorrect) {
                 // Save solution

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Roadmap - CODECADE</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 2px solid #00ff41;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            color: #00ff41;
+            text-decoration: none;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #00ff41;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 100px auto 0;
+            padding: 2rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .roadmap-path {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .level {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .level:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .level-number {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            color: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 2rem;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .level-content {
+            background: rgba(0, 255, 65, 0.1);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            padding: 2rem;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .level-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #00ff41;
+        }
+
+        .level-description {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+
+        .topics-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .topics-list li {
+            background: rgba(0, 0, 0, 0.3);
+            margin: 0.5rem 0;
+            padding: 0.5rem 1rem;
+            border-left: 3px solid #00ff41;
+            font-size: 1.1rem;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .easy { background: #4CAF50; color: white; }
+        .medium { background: #FF9800; color: white; }
+        .hard { background: #F44336; color: white; }
+        .expert { background: #9C27B0; color: white; }
+
+        .connecting-line {
+            position: absolute;
+            left: 50%;
+            top: 60px;
+            width: 2px;
+            height: calc(100% - 120px);
+            background: linear-gradient(to bottom, #00ff41, transparent);
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+
+        .start-button {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #00ff41, #00cc33);
+            color: #000;
+            padding: 1rem 2rem;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #00ff41;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">CODECADE</a>
+            <div class="nav-links">
+                <a href="/home.html">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/roadmap.html">Roadmap</a>
+                <a href="/help.html">Help</a>
+                <a href="/dashboard.html">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">DSA LEARNING ROADMAP</h1>
+
+        <div class="roadmap-path">
+            <div class="connecting-line"></div>
+            
+            <div class="level">
+                <div class="level-number">1</div>
+                <div class="level-content">
+                    <h3 class="level-title">FUNDAMENTALS</h3>
+                    <p class="level-description">Master the basics of programming and problem-solving</p>
+                    <ul class="topics-list">
+                        <li>Time & Space Complexity</li>
+                        <li>Basic Input/Output</li>
+                        <li>Variables & Data Types</li>
+                        <li>Conditional Statements</li>
+                        <li>Loops & Iterations</li>
+                    </ul>
+                    <span class="difficulty easy">EASY</span>
+                </div>
+            </div>
+
+            <div class="level">
+                <div class="level-number">2</div>
+                <div class="level-content">
+                    <h3 class="level-title">ARRAYS & STRINGS</h3>
+                    <p class="level-description">Learn linear data structures and manipulation techniques</p>
+                    <ul class="topics-list">
+                        <li>Array Operations</li>
+                        <li>Two Pointers Technique</li>
+                        <li>Sliding Window</li>
+                        <li>String Manipulation</li>
+                        <li>Pattern Matching</li>
+                    </ul>
+                    <span class="difficulty easy">EASY</span>
+                </div>
+            </div>
+
+            <div class="level">
+                <div class="level-number">3</div>
+                <div class="level-content">
+                    <h3 class="level-title">SORTING & SEARCHING</h3>
+                    <p class="level-description">Master fundamental algorithms for organizing and finding data</p>
+                    <ul class="topics-list">
+                        <li>Bubble, Selection, Insertion Sort</li>
+                        <li>Merge Sort & Quick Sort</li>
+                        <li>Binary Search</li>
+                        <li>Search in Rotated Arrays</li>
+                        <li>Custom Comparators</li>
+                    </ul>
+                    <span class="difficulty medium">MEDIUM</span>
+                </div>
+            </div>
+
+            <div class="level">
+                <div class="level-number">4</div>
+                <div class="level-content">
+                    <h3 class="level-title">LINKED LISTS</h3>
+                    <p class="level-description">Understand dynamic data structures and pointer manipulation</p>
+                    <ul class="topics-list">
+                        <li>Singly & Doubly Linked Lists</li>
+                        <li>Cycle Detection</li>
+                        <li>Reversal Techniques</li>
+                        <li>Merge Operations</li>
+                        <li>Fast & Slow Pointers</li>
+                    </ul>
+                    <span class="difficulty medium">MEDIUM</span>
+                </div>
+            </div>
+
+            <div class="level">
+                <div class="level-number">5</div>
+                <div class="level-content">
+                    <h3 class="level-title">STACKS & QUEUES</h3>
+                    <p class="level-description">Learn LIFO and FIFO data structures and their applications</p>
+                    <ul class="topics-list">
+                        <li>Stack Implementation</li>
+                        <li>Queue & Deque</li>
+                        <li>Expression Evaluation</li>
+                        <li>Monotonic Stack/Queue</li>
+                        <li>Priority Queues</li>
+                    </ul>
+                    <span class="difficulty medium">MEDIUM</span>
+                </div>
+            </div>
+
+            <div class="level">
+                <div class="level-number">6</div>
+                <div class="level-content">
+                    <h3 class="level-title">TREES & GRAPHS</h3>
+                    <p class="level-description">Master hierarchical and network data structures</p>
+                    <ul class="topics-list">
+                        <li>Binary Trees & BST</li>
+                        <li>Tree Traversals</li>
+                        <li>Graph Representation</li>
+                        <li>DFS & BFS</li>
+                        <li>Shortest Path Algorithms</li>
+                    </ul>
+                    <span class="difficulty hard">HARD</span>
+                </div>
+            </div>
+
+            <div class="level">
+                <div class="level-number">7</div>
+                <div class="level-content">
+                    <h3 class="level-title">DYNAMIC PROGRAMMING</h3>
+                    <p class="level-description">Solve complex optimization problems efficiently</p>
+                    <ul class="topics-list">
+                        <li>Memoization & Tabulation</li>
+                        <li>1D & 2D DP</li>
+                        <li>Knapsack Problems</li>
+                        <li>LCS & LIS</li>
+                        <li>Advanced DP Patterns</li>
+                    </ul>
+                    <span class="difficulty expert">EXPERT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="start-button">
+            <a href="/practice-new.html" class="cta-button">START YOUR JOURNEY</a>
+        </div>
+    </div>
+</body>
+</html>

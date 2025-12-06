@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/profile', authenticateToken, (req, res) => {
     const userId = req.user.userId;
     
-    db.get('SELECT id, username, email, level, xp, streak_days, college, battle_rating, battle_wins, battle_losses FROM users WHERE id = ?', 
+    db.get('SELECT id, username, email, role, level, xp, streak_days, college, battle_rating, battle_wins, battle_losses FROM users WHERE id = ?', 
         [userId], (err, user) => {
             if (err) {
                 console.error('Database error:', err);
@@ -63,14 +63,35 @@ router.get('/stats', authenticateToken, (req, res) => {
 // Update user profile
 router.put('/profile', authenticateToken, (req, res) => {
     const userId = req.user.userId;
-    const { username, college } = req.body;
+    const { username, college, bio, github_url, linkedin_url, portfolio_url, skills, projects, certifications } = req.body;
 
     if (!username) {
         return res.status(400).json({ error: 'Username is required' });
     }
 
-    db.run('UPDATE users SET username = ?, college = ? WHERE id = ?', 
-        [username, college || '', userId], function(err) {
+    // First add new columns if they don't exist
+    const addColumns = [
+        'ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ""',
+        'ALTER TABLE users ADD COLUMN github_url TEXT DEFAULT ""',
+        'ALTER TABLE users ADD COLUMN linkedin_url TEXT DEFAULT ""',
+        'ALTER TABLE users ADD COLUMN portfolio_url TEXT DEFAULT ""',
+        'ALTER TABLE users ADD COLUMN skills TEXT DEFAULT ""',
+        'ALTER TABLE users ADD COLUMN projects TEXT DEFAULT ""',
+        'ALTER TABLE users ADD COLUMN certifications TEXT DEFAULT ""'
+    ];
+
+    addColumns.forEach(sql => {
+        db.run(sql, (err) => {
+            // Ignore errors if columns already exist
+        });
+    });
+
+    db.run(`UPDATE users SET username = ?, college = ?, bio = ?, github_url = ?, 
+            linkedin_url = ?, portfolio_url = ?, skills = ?, projects = ?, certifications = ? 
+            WHERE id = ?`, 
+        [username, college || '', bio || '', github_url || '', linkedin_url || '', 
+         portfolio_url || '', skills || '', projects || '', certifications || '', userId], 
+        function(err) {
             if (err) {
                 console.error('Error updating user:', err);
                 return res.status(500).json({ error: 'Failed to update profile' });

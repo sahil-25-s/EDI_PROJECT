@@ -3,262 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyBot - CODECADE</title>
+    <title>StudyBot - Codecade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'VT323', monospace; background: #000 url('/assets/images/background.jpg') center center / cover no-repeat fixed; }
-        .text-glow-pink { color: #ff1493; text-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493; }
-        .text-glow-cyan { color: #00ffff; text-shadow: 0 0 5px #00ffff; }
-        .retro-panel { background-color: #4b2e72; border: 4px solid #9932cc; box-shadow: 0 0 15px #9932cc; }
-        .chat-message { animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body {
+            font-family: 'VT323', monospace;
+            background: #000 url('/assets/images/background.jpg') center center / cover no-repeat fixed;
+            color: #e0e0e0;
+            font-size: 1.25rem;
+        }
+
+        .retro-panel {
+            background: linear-gradient(135deg, rgba(75, 46, 114, 0.9), rgba(46, 26, 71, 0.9));
+            border: 4px solid #9932cc;
+            box-shadow: 0 0 15px #9932cc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .retro-btn {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+            border: 3px solid #da70d6;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            color: #da70d6;
+            background: transparent;
+        }
+
+        .retro-btn:hover {
+            background: #da70d6;
+            color: #1a0a2e;
+            box-shadow: 0 0 20px #da70d6;
+        }
+
+        .retro-input {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            background: rgba(46, 26, 71, 0.8);
+            border: 2px solid #9932cc;
+            color: #c084fc;
+            padding: 0.75rem;
+            border-radius: 6px;
+            width: 100%;
+            outline: none;
+        }
+
+        .text-glow-pink { color: #ff1493; text-shadow: 0 0 10px #ff1493; }
+        .text-glow-purple { color: #9932cc; text-shadow: 0 0 10px #9932cc; }
+        .text-glow-cyan { color: #67e8f9; text-shadow: 0 0 10px #06b6d4; }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .bot-message {
+            background: rgba(75, 46, 114, 0.6);
+            border-left: 4px solid #67e8f9;
+        }
+
+        .user-message {
+            background: rgba(46, 26, 71, 0.6);
+            border-left: 4px solid #ff1493;
+            margin-left: 2rem;
+        }
+
+        .study-plan {
+            background: rgba(75, 46, 114, 0.4);
+            border: 2px solid #da70d6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .plan-item {
+            background: rgba(46, 26, 71, 0.6);
+            border: 1px solid #9932cc;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .typing {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
     </style>
 </head>
-<body class="min-h-screen text-white">
-    <div class="bg-purple-900/60 min-h-screen p-8">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex items-center mb-8">
-                <a href="index.html" class="text-2xl text-blue-400 hover:text-blue-300 mr-4">← Back</a>
-                <h1 class="text-5xl font-bold text-glow-pink">🤖 StudyBot</h1>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="retro-panel">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl text-glow-pink">🤖 STUDYBOT AI</h1>
+            <div class="flex gap-2">
+                <a href="index.html" class="retro-btn text-sm">← HOME</a>
+                <button id="clearBtn" class="retro-btn text-sm">CLEAR CHAT</button>
             </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Chat Panel -->
-                <div class="retro-panel rounded-xl p-6">
-                    <h2 class="text-3xl text-glow-cyan mb-4">Chat with StudyBot</h2>
-                    <div id="chatBox" class="bg-black/50 rounded-lg p-4 h-96 overflow-y-auto mb-4 space-y-3">
-                        <div class="chat-message text-cyan-400">
-                            <strong>StudyBot:</strong> Hi! I'm StudyBot. I can help you create personalized study plans. Tell me about your exam!
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <input type="text" id="chatInput" placeholder="Type your message..." 
-                               class="flex-1 bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white"
-                               onkeypress="if(event.key==='Enter') sendChat()">
-                        <button onclick="sendChat()" class="bg-pink-600 hover:bg-pink-700 px-6 py-2 rounded font-bold">Send</button>
-                    </div>
-                </div>
+        </div>
+    </header>
 
-                <!-- Quick Plan Creator -->
-                <div class="retro-panel rounded-xl p-6">
-                    <h2 class="text-3xl text-glow-cyan mb-4">Quick Plan Creator</h2>
-                    <div class="space-y-4">
-                        <input type="text" id="examName" placeholder="Exam Name (e.g., DSA Midsem)" 
-                               class="w-full bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white">
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="date" id="startDate" 
-                                   class="bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white">
-                            <input type="date" id="examDate" 
-                                   class="bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white">
-                        </div>
-                        
-                        <input type="number" id="dailyHours" placeholder="Daily Hours (e.g., 3)" min="1" max="12"
-                               class="w-full bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white">
-                        
-                        <div id="topicsContainer" class="space-y-2">
-                            <div class="flex gap-2">
-                                <input type="text" placeholder="Topic (e.g., Arrays)" class="flex-1 bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white topic-name">
-                                <select class="bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white topic-difficulty">
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
-                                </select>
-                                <input type="number" placeholder="Weight" min="1" max="100" value="10" class="w-20 bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white topic-weight">
-                            </div>
-                        </div>
-                        
-                        <button onclick="addTopic()" class="text-cyan-400 hover:text-cyan-300">+ Add Topic</button>
-                        
-                        <button onclick="createPlan()" class="w-full bg-pink-600 hover:bg-pink-700 px-6 py-3 rounded-lg text-2xl font-bold">
-                            Generate Study Plan
-                        </button>
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Chat Area -->
+        <div class="retro-panel">
+            <div id="chatArea" class="h-96 overflow-y-auto mb-4">
+                <div class="chat-message bot-message">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">🤖</span>
+                        <span class="text-glow-cyan font-bold">StudyBot</span>
                     </div>
+                    <p>Hello! I'm your AI study companion. I can help you create personalized study plans, recommend problems, and track your progress. What would you like to work on today?</p>
                 </div>
             </div>
 
-            <!-- Plan Display -->
-            <div id="planDisplay" class="retro-panel rounded-xl p-6 mt-6 hidden">
-                <h2 class="text-3xl text-glow-cyan mb-4">Your Study Plan</h2>
-                <div id="planContent" class="space-y-4"></div>
+            <!-- Input Area -->
+            <div class="flex gap-2">
+                <input type="text" id="messageInput" class="retro-input flex-1" placeholder="Ask me anything about DSA or coding..." maxlength="500">
+                <button id="sendBtn" class="retro-btn">SEND</button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="retro-panel">
+            <h2 class="text-xl text-glow-purple mb-4">QUICK ACTIONS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <button class="retro-btn text-sm" onclick="quickAction('Create study plan for interviews')">
+                    📚 Interview Prep Plan
+                </button>
+                <button class="retro-btn text-sm" onclick="quickAction('Recommend problems for beginners')">
+                    🎯 Beginner Problems
+                </button>
+                <button class="retro-btn text-sm" onclick="quickAction('Help with dynamic programming')">
+                    🧠 Dynamic Programming
+                </button>
+                <button class="retro-btn text-sm" onclick="quickAction('Explain time complexity')">
+                    ⏱️ Time Complexity
+                </button>
+                <button class="retro-btn text-sm" onclick="quickAction('Data structures roadmap')">
+                    🗺️ DS Roadmap
+                </button>
+                <button class="retro-btn text-sm" onclick="quickAction('Weekly study schedule')">
+                    📅 Study Schedule
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8080';
-        const username = localStorage.getItem('codecade_username') || 'guest_' + Date.now();
-
-        async function sendChat() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
-
-            addChatMessage('You', message, 'text-green-400');
-            input.value = '';
-
-            try {
-                const res = await fetch(`${API_BASE}/studybot/chat`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username, message})
-                });
-                const data = await res.json();
-                addChatMessage('StudyBot', data.reply, 'text-cyan-400');
-                
-                if (data.planPreview) {
-                    displayPlanPreview(data.planPreview);
-                }
-            } catch (err) {
-                addChatMessage('System', 'Error: ' + err.message, 'text-red-400');
-            }
+        const API_BASE = 'http://localhost:3000';
+        const AUTH_TOKEN = localStorage.getItem('token') || '';
+        
+        if (!AUTH_TOKEN) {
+            window.location.href = 'index.html';
         }
 
-        function addChatMessage(sender, message, color) {
-            const chatBox = document.getElementById('chatBox');
-            const div = document.createElement('div');
-            div.className = `chat-message ${color}`;
-            div.innerHTML = `<strong>${sender}:</strong> ${message.replace(/\n/g, '<br>')}`;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+        let chatHistory = [];
 
-        function addTopic() {
-            const container = document.getElementById('topicsContainer');
-            const div = document.createElement('div');
-            div.className = 'flex gap-2';
-            div.innerHTML = `
-                <input type="text" placeholder="Topic" class="flex-1 bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white topic-name">
-                <select class="bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white topic-difficulty">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-                <input type="number" placeholder="Weight" min="1" max="100" value="10" class="w-20 bg-gray-800 border border-purple-500 rounded px-4 py-2 text-white topic-weight">
-                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300 px-2">✕</button>
-            `;
-            container.appendChild(div);
-        }
-
-        async function createPlan() {
-            const examName = document.getElementById('examName').value;
-            const startDate = document.getElementById('startDate').value;
-            const examDate = document.getElementById('examDate').value;
-            const dailyHours = parseInt(document.getElementById('dailyHours').value);
-
-            const topicElements = document.querySelectorAll('#topicsContainer > div');
-            const topics = Array.from(topicElements).map(el => ({
-                name: el.querySelector('.topic-name').value,
-                difficulty: el.querySelector('.topic-difficulty').value,
-                weightage: parseInt(el.querySelector('.topic-weight').value)
-            })).filter(t => t.name);
-
-            if (!examName || !startDate || !examDate || !dailyHours || topics.length === 0) {
-                alert('Please fill all fields and add at least one topic!');
-                return;
-            }
-
-            try {
-                const res = await fetch(`${API_BASE}/studybot/plan`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username, examName, startDate, examDate, dailyHours, topics})
-                });
-                const data = await res.json();
-                
-                addChatMessage('StudyBot', data.message, 'text-cyan-400');
-                displayFullPlan(data.plan);
-            } catch (err) {
-                alert('Error creating plan: ' + err.message);
-            }
-        }
-
-        function displayFullPlan(plan) {
-            const display = document.getElementById('planDisplay');
-            const content = document.getElementById('planContent');
+        function addMessage(content, isBot = false) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isBot ? 'bot-message' : 'user-message'}`;
             
-            let html = `
-                <div class="bg-black/50 rounded-lg p-4 mb-4">
-                    <h3 class="text-2xl text-pink-400 mb-2">${plan.examName}</h3>
-                    <p class="text-xl">📅 ${plan.startDate} to ${plan.examDate} (${plan.totalDays} days)</p>
-                    <p class="text-xl">⏰ ${plan.dailyHours} hours/day</p>
-                </div>
-
-                <div class="bg-black/50 rounded-lg p-4 mb-4">
-                    <h3 class="text-2xl text-cyan-400 mb-3">📚 Topics</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${plan.topics.map(t => `
-                            <div class="bg-purple-900/50 rounded p-2">
-                                <span class="text-yellow-400">${t.name}</span>
-                                <span class="text-gray-400 text-sm">(${t.difficulty}, weight: ${t.weightage})</span>
-                            </div>
-                        `).join('')}
+            if (isBot) {
+                messageDiv.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">🤖</span>
+                        <span class="text-glow-cyan font-bold">StudyBot</span>
                     </div>
-                </div>
-
-                <div class="bg-black/50 rounded-lg p-4 mb-4">
-                    <h3 class="text-2xl text-cyan-400 mb-3">🎯 Phases</h3>
-                    ${plan.phases.map((phase, i) => `
-                        <div class="mb-3 border-l-4 border-pink-500 pl-4">
-                            <h4 class="text-xl text-yellow-400">${phase.name}</h4>
-                            <p class="text-gray-300">Days ${phase.startDay}-${phase.endDay}: ${phase.focus}</p>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <div class="bg-black/50 rounded-lg p-4">
-                    <h3 class="text-2xl text-cyan-400 mb-3">📅 First 3 Days Preview</h3>
-                    ${plan.dailyPlan.slice(0, 3).map(day => `
-                        <div class="mb-3 bg-purple-900/30 rounded p-3">
-                            <h4 class="text-xl text-green-400">Day ${day.dayIndex} - ${day.date}</h4>
-                            <ul class="list-disc list-inside text-gray-300">
-                                ${day.tasks.map(task => `<li>${task}</li>`).join('')}
-                            </ul>
-                        </div>
-                    `).join('')}
-                    <p class="text-gray-400 text-center mt-2">... and ${plan.dailyPlan.length - 3} more days</p>
-                </div>
-            `;
+                    <div>${content}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">👤</span>
+                        <span class="text-glow-pink font-bold">You</span>
+                    </div>
+                    <div>${content}</div>
+                `;
+            }
             
-            content.innerHTML = html;
-            display.classList.remove('hidden');
-            display.scrollIntoView({behavior: 'smooth'});
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
         }
 
-        function displayPlanPreview(preview) {
-            const display = document.getElementById('planDisplay');
-            const content = document.getElementById('planContent');
-            
-            let html = `
-                <div class="bg-black/50 rounded-lg p-4">
-                    <h3 class="text-2xl text-cyan-400 mb-3">Plan Preview</h3>
-                    <p class="text-xl mb-2">Total Days: ${preview.totalDays}</p>
-                    ${preview.phases ? `
-                        <div class="space-y-2">
-                            ${preview.phases.map(p => `
-                                <div class="border-l-4 border-pink-500 pl-3">
-                                    <strong>${p.name}</strong>: Days ${p.startDay}-${p.endDay}
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
+        function showTyping() {
+            const chatArea = document.getElementById('chatArea');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'chat-message bot-message typing';
+            typingDiv.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-2xl">🤖</span>
+                    <span class="text-glow-cyan font-bold">StudyBot</span>
                 </div>
+                <div>Thinking...</div>
             `;
-            
-            content.innerHTML = html;
-            display.classList.remove('hidden');
+            chatArea.appendChild(typingDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
         }
 
-        // Set default dates
-        window.onload = () => {
-            const today = new Date();
-            const nextMonth = new Date(today);
-            nextMonth.setDate(today.getDate() + 30);
+        function removeTyping() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
             
-            document.getElementById('startDate').valueAsDate = today;
-            document.getElementById('examDate').valueAsDate = nextMonth;
-        };
+            if (!message) return;
+            
+            addMessage(message, false);
+            input.value = '';
+            
+            showTyping();
+            
+            // Simulate AI response
+            setTimeout(() => {
+                removeTyping();
+                const response = generateResponse(message);
+                addMessage(response, true);
+            }, 1500);
+        }
+
+        function generateResponse(message) {
+            const msg = message.toLowerCase();
+            
+            if (msg.includes('study plan') || msg.includes('interview')) {
+                return `
+                    <p>I'll create a personalized study plan for you! Here's a 4-week interview preparation plan:</p>
+                    <div class="study-plan">
+                        <h3 class="text-lg text-glow-purple mb-3">📚 4-Week Interview Prep Plan</h3>
+                        <div class="plan-item">
+                            <strong>Week 1:</strong> Arrays & Strings (Two Sum, Valid Anagram, Longest Substring)
+                        </div>
+                        <div class="plan-item">
+                            <strong>Week 2:</strong> Linked Lists & Stacks (Reverse List, Valid Parentheses)
+                        </div>
+                        <div class="plan-item">
+                            <strong>Week 3:</strong> Trees & Graphs (Binary Tree Traversal, DFS/BFS)
+                        </div>
+                        <div class="plan-item">
+                            <strong>Week 4:</strong> Dynamic Programming (Climbing Stairs, Coin Change)
+                        </div>
+                    </div>
+                    <p>Would you like me to adjust this plan based on your current level?</p>
+                `;
+            }
+            
+            if (msg.includes('beginner') || msg.includes('recommend')) {
+                return `
+                    <p>Perfect! Here are the best problems for beginners:</p>
+                    <div class="study-plan">
+                        <h3 class="text-lg text-glow-purple mb-3">🎯 Beginner-Friendly Problems</h3>
+                        <div class="plan-item">
+                            <strong>1. Two Sum</strong> - Learn hash maps and array traversal
+                        </div>
+                        <div class="plan-item">
+                            <strong>2. Valid Parentheses</strong> - Master stack data structure
+                        </div>
+                        <div class="plan-item">
+                            <strong>3. Palindrome Number</strong> - Practice number manipulation
+                        </div>
+                        <div class="plan-item">
+                            <strong>4. Reverse String</strong> - Understand two-pointer technique
+                        </div>
+                    </div>
+                    <p>Start with these and let me know when you're ready for the next level!</p>
+                `;
+            }
+            
+            if (msg.includes('dynamic programming') || msg.includes('dp')) {
+                return `
+                    <p>Dynamic Programming can be tricky! Let me break it down:</p>
+                    <div class="study-plan">
+                        <h3 class="text-lg text-glow-purple mb-3">🧠 DP Learning Path</h3>
+                        <div class="plan-item">
+                            <strong>Step 1:</strong> Understand recursion first (Fibonacci, Factorial)
+                        </div>
+                        <div class="plan-item">
+                            <strong>Step 2:</strong> Learn memoization (top-down approach)
+                        </div>
+                        <div class="plan-item">
+                            <strong>Step 3:</strong> Master tabulation (bottom-up approach)
+                        </div>
+                        <div class="plan-item">
+                            <strong>Practice:</strong> Climbing Stairs → Coin Change → Longest Common Subsequence
+                        </div>
+                    </div>
+                    <p>The key is to identify overlapping subproblems and optimal substructure!</p>
+                `;
+            }
+            
+            if (msg.includes('time complexity') || msg.includes('big o')) {
+                return `
+                    <p>Time complexity measures how algorithm performance scales with input size:</p>
+                    <div class="study-plan">
+                        <h3 class="text-lg text-glow-purple mb-3">⏱️ Big O Notation</h3>
+                        <div class="plan-item">
+                            <strong>O(1):</strong> Constant - Array access, hash lookup
+                        </div>
+                        <div class="plan-item">
+                            <strong>O(log n):</strong> Logarithmic - Binary search, balanced trees
+                        </div>
+                        <div class="plan-item">
+                            <strong>O(n):</strong> Linear - Single loop, array traversal
+                        </div>
+                        <div class="plan-item">
+                            <strong>O(n²):</strong> Quadratic - Nested loops, bubble sort
+                        </div>
+                    </div>
+                    <p>Always aim for the most efficient solution possible!</p>
+                `;
+            }
+            
+            // Default responses
+            const responses = [
+                "That's a great question! Based on your current progress, I recommend focusing on fundamental data structures first.",
+                "I can help you with that! Let me create a customized learning path based on your goals.",
+                "Excellent topic to explore! Here's what I suggest you focus on next...",
+                "That's an important concept in DSA. Let me break it down for you step by step.",
+                "Good thinking! This is a common challenge many developers face. Here's my recommendation..."
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function quickAction(action) {
+            document.getElementById('messageInput').value = action;
+            sendMessage();
+        }
+
+        function clearChat() {
+            const chatArea = document.getElementById('chatArea');
+            chatArea.innerHTML = `
+                <div class="chat-message bot-message">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">🤖</span>
+                        <span class="text-glow-cyan font-bold">StudyBot</span>
+                    </div>
+                    <p>Chat cleared! How can I help you with your DSA journey today?</p>
+                </div>
+            `;
+        }
+
+        // Event listeners
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        document.getElementById('clearBtn').addEventListener('click', clearChat);
     </script>
 </body>
 </html>
